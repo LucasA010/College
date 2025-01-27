@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EJS Intro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <%- include('../partials/navbar.ejs') %>
+    
+    <h1>Welcome to my first time with EJS</h1>
+
+    <h2>Prime numbers!</h2>
+    <% for( let num = 2; num <= 100; num++ ) { %>
+        <% let isPrime = true %>
+        <% for( let divisor = 2; divisor < num; divisor++ ) { %>
+            <% if (num%divisor == 0) { %>
+                <% isPrime = false; break; %>
+            <% } %>   
+        <% } %>
+        <% if (isPrime) { %>
+                <p><%= num %></p>
+            <% } %>
+    <% } %>
+</body>
+</html>
