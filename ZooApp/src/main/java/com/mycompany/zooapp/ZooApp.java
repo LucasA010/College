@@ -1,12 +1,12 @@
 
-package com.mycompany.zooapp_ca3;
+package com.mycompany.zooapp;
 
 import java.util.Date;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ZooApp_CA3 {
+public class ZooApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         File animalsFile = new File("C:\\Users\\lucru\\Documents\\College\\ZooApp_CA3\\src\\main\\java\\com\\mycompany\\zooapp_ca3\\animals.txt");
