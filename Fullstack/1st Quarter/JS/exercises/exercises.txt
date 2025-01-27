@@ -1,0 +1,33 @@
+ 1. Write a JavaScript program that displays "Hello, World!" in the browser console.
+ 2. Create a JavaScript function that takes two numbers as input, performs addition,
+ subtraction, multiplication, and division operations on them, and displays the results
+ in the browser console.
+ 3. Write a JavaScript program that prints the numbers 1 to 10 using a for loop and
+ another version using a while loop.
+ 4. Write a JavaScript program that checks if a given number is even or odd and displays
+ the result in the browser console.
+ 5. Create an array of 5 names. Use a for loop to iterate through the array and print
+ each name in the browser console.
+ 6. Write a function that takes a string as input and returns the string reversed.
+ 7. Create a function that checks whether a given word or phrase is a palindrome. A
+ palindrome is a word or phrase that reads the same backwards as forwards.
+ 8. Write a program that prints the numbers from 1 to 100. For multiples of 3, print "Fizz"
+ instead of the number, and for the multiples of 5, print "Buzz." For numbers which are
+ multiples of both 3 and 5, print "FizzBuzz."
+ 9. Write a function that takes a string as input and returns the length of the longest word
+ in the string.
+ 10. Write a function that takes a string as input and returns the number of vowels (a, e, i,
+ o, u) in the string.
+ 11. Create a function that takes a positive integer as input and returns its factorial. The
+ factorial of a non-negative integer n is the product of all positive integers less than or
+ equal to n.
+ 12. Write a function that generates the first n numbers in the Fibonacci sequence. The
+ Fibonacci sequence is a series of numbers in which each number is the sum of the
+ two preceding ones, usually starting with 0 and 1.
+ 13. Write a function that finds the sum of all multiples of 3 or 5 below a given number.
+ 14. Create a function that checks if a given number is a prime number. A prime number
+ is a number greater than 1 that is only divisible by 1 and itself.
+ 15. Create a function that takes a string and a number as input, and returns the Caesar
+ cipher of the string, shifted by the given number. The Caesar cipher is a simple
+ encryption technique where each letter in the plaintext is replaced by a letter some
+ fixed number of positions down the alphabet.

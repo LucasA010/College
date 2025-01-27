@@ -1,0 +1,13 @@
+body {
+    text-align: center;
+}
+
+td {
+    background-color: aqua;
+    height: 20px;
+    width: 20px;
+}
+
+#reset {
+    display: none;
+}

@@ -1,0 +1,40 @@
+nav a {
+    border: 3px solid black;
+    font-size: 25px;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.content {
+    background-color: darkolivegreen;
+    height: 100vh;    
+}
+
+header {
+    position: fixed;
+    top: 0;
+}
+
+footer {
+    position: fixed;
+    top: 0;
+}
+
+body {
+    margin: 0 auto 0 auto;
+    width: 50%;
+    background-color: darkgreen;
+}
+
+.testimonialFlexContainer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.testimonialFlexContainer p {
+    width: 80px;
+}

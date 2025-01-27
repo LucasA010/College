@@ -1,0 +1,8 @@
+Mammal,Dog,Snoopy
+Grass
+1950/10/04,10.4
+Colour,White,Spots,Black
+Reptile,Dragon,Smaug
+Mountain
+1937/09/21,1234
+Breath,Fire,Hoard,Gold,Food,Dwarves
