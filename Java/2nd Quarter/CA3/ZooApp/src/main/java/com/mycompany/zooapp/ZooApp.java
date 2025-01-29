@@ -29,9 +29,15 @@ public class ZooApp {
         Date dateOfBirth = null;
         double weight = 0;
         HashMap<String, String> comments = new HashMap<String, String>(); // Hash map for comments of each animal
-//        DateFormat dateCheck = new SimpleDateFormat("yyyy/MM/dd"); // Valid date format
-//        dateCheck.setLenient(false); // Allows only exact match
         
+        try { // try catch to get size of file
+            Scanner fr = new Scanner(animalsFile); // Creating file reader object
+            while (fr.hasNextLine()){totalLines++;}; // Getting total of lines
+        } catch (Exception e){
+            System.out.println("Line assignment failed");            
+        }
+        
+        Animal[] animals = new Animal[totalLines/linesPerAnimal]; // Creating empty object list
         // first loop of surface menu
         do {
             System.out.println("Welcome to the Zoo App! Please choose one of the options below:\n"+
@@ -54,9 +60,11 @@ public class ZooApp {
                                             "please make sure that is in the same directory and named as 'animals.txt'");
                     } else { // read file if it exists, otherwise curse the user
                         try {
-                            Scanner fr = new Scanner(animalsFile); // Creating file reader object
-                            
-                            while (fr.hasNextLine()){totalLines++;}; // Getting total of lines
+                            Scanner fr = new Scanner(animalsFile);
+//                            Scanner fr = new Scanner(animalsFile); // Creating file reader object
+//                            
+//                            while (fr.hasNextLine()){totalLines++;}; // Getting total of lines
+//                            Animal[] animals = new Animal[totalLines/4]; // Creating empty object list
                             
                             while(fr.hasNextLine()) { // Loops until there aren't more lines in the file
                                 boolean animalValid = true; // In case any data on animal is wrong the object will not be created
@@ -192,49 +200,38 @@ public class ZooApp {
                                                     comments.put(line4Splitted[l], line4Splitted[l+1]);
                                                 }
                                             }
-                                            
-                                            // MOVE TO PROPER PLACE
-                                            // MOVE TO PROPER PLACE
-                                            // enhanced loop to print hash map
-                                            for (String l:comments.keySet()) {
-                                                System.out.println("The animal('s) "+l+"('s) "+comments.get(l));
-                                            }
-                                            // MOVE TO PROPER PLACE
-                                            // MOVE TO PROPER PLACE
                                             break;
                                     }
                                 }
                                 // assign variables and create proper objects in case all data is correct
+                                
                                 if (animalValid) {
-                                    Animal[] animals = new Animal[totalLines/4];
+                                    
                                     switch (type.toLowerCase()){
                                         case "fish":
-                                            animals[lineCounter/4] = new Fish(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Fish(name, species, habitat, dateOfBirth, weight, comments);
                                             System.out.println("Fish created");
                                             break;
                                             
                                         case "mammal":
-                                            animals[lineCounter/4] = new Mammal(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Mammal(name, species, habitat, dateOfBirth, weight, comments);
                                             System.out.println("Mammal created");
                                             break;
                                             
                                         case "reptile":
-                                            animals[lineCounter/4] = new Reptile(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Reptile(name, species, habitat, dateOfBirth, weight, comments);
                                             System.out.println("Reptile created");
                                             break;
                                             
                                         case "bird":
-                                            animals[lineCounter/4] = new Bird(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Bird(name, species, habitat, dateOfBirth, weight, comments);
                                             System.out.println("Bird created");
                                             break;
                                         default:
                                             System.out.println("Noone created");
                                             break;
                                     }
-                                } 
-                    
-                    
-                                // assign variables and create proper objects
+                                }
                             }
                         } catch (Exception e) {
                             System.out.println("Something went bad"+e);
@@ -242,16 +239,21 @@ public class ZooApp {
                         // signal that the file has been read and approved
                         isRead = true;
                     }
-                    
-                    
-                    
-                    
                     break;
                     
                 case 2: // display all animals
                     // only avaible if file is read - IMPORTANT
                     if (isRead) {
-                        
+                        for (int i=0; i<animals.length; i++) { // Loop to print details of all animals in list
+                            System.out.println(i+" animal name is: "+animals[i].getName());
+                            System.out.println("From the species: "+animals[i].getSpecies());
+                            System.out.println("Its natural habitat being: "+animals[i].getHabitat());
+                            System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString());
+                            System.out.println("Currently weighting: "+animals[i].getWeight());
+                            System.out.println("Additional commentary for the animal below: ");
+                            animals[i].getComments();
+                            System.out.println("");
+                        }
                     } else {
                         System.out.println("You need to read the input file first!");
                     }
@@ -313,6 +315,7 @@ public class ZooApp {
                                     break;
                                 case 2: // habitat search
                                     System.out.println("search by habitat");
+                                    searchBySubType(animals, "habitat");
                                     break;
                                 case 3: // name search
                                     System.out.println("search by name");
@@ -341,5 +344,13 @@ public class ZooApp {
                     System.out.println("Invalid option, please input again");
             }
         } while (cont);
+    }
+    
+    public static void searchBySubType(Animal[] animals, String subType) {
+        for (int i=0; i<animals.length; i++) {
+            if (animals[i] == type) {
+                System.out.println("");
+            }
+        }
     }
 }

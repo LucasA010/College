@@ -72,8 +72,10 @@ public class Animal {
         this.weight = weight;
     }
 
-    public HashMap<String, String> getComments() {
-        return comments;
+    public void getComments() {
+        for (String l:comments.keySet()) {
+            System.out.println(l+": "+comments.get(l));
+        }
     }
 
     public void setComments(HashMap<String, String> comments) {
