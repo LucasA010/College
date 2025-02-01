@@ -13,7 +13,7 @@ public class ZooApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         // File location, please change when receiving CA :)
-        File animalsFile = new File("C:\\Users\\lucru\\Documents\\College\\Java\\2nd Quarter\\CA3\\ZooApp\\src\\main\\java\\com\\mycompany\\zooapp\\animals.txt");
+        File animalsFile = new File("animals.txt");
         // functional variables
         int option; // menu option
         boolean cont = true; // terminate app
@@ -292,16 +292,16 @@ public class ZooApp {
                                         // third switch statement for type search
                                         switch(typeSearch) {
                                             case 1: // mammal search
-                                                System.out.println("searchin by mammal");
+                                                animalDetails(animals, "mammal");
                                                 break;
                                             case 2: // bird search
-                                                System.out.println("searchin by bird");
+                                                animalDetails(animals, "bird");
                                                 break;
                                             case 3: // reptile search
-                                                System.out.println("searchin by reptile");
+                                                animalDetails(animals, "reptile");
                                                 break;
                                             case 4: // fish search
-                                                System.out.println("searchin by fish");
+                                                animalDetails(animals, "fish");
                                                 break;
                                             case 9: // going one level above
                                                 break;
@@ -315,7 +315,6 @@ public class ZooApp {
                                     break;
                                 case 2: // habitat search
                                     System.out.println("search by habitat");
-                                    searchBySubType(animals, "habitat");
                                     break;
                                 case 3: // name search
                                     System.out.println("search by name");
@@ -346,9 +345,16 @@ public class ZooApp {
         } while (cont);
     }
     
-    public static void searchBySubType(Animal[] animals, String subType) {
-        for (int i=0; i<animals.length; i++) {
-            if (animals[i] == type) {
+    public static void animalDetails(Animal[] animals, String search) {
+        for (int index=0; index<animals.length; index++) {
+            if(animals[index].getName().toLowerCase().equals(search)) {
+                System.out.println(index+" animal name is: "+animals[index].getName());
+                System.out.println("From the species: "+animals[index].getSpecies());
+                System.out.println("Its natural habitat being: "+animals[index].getHabitat());
+                System.out.println("Born at this date: "+animals[index].getDateOfBirth().toString());
+                System.out.println("Currently weighting: "+animals[index].getWeight());
+                System.out.println("Additional commentary for the animal below: ");
+                animals[index].getComments();
                 System.out.println("");
             }
         }
