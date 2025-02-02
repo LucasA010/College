@@ -13,7 +13,7 @@ public class ZooApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         // File location, please change when receiving CA :)
-        File animalsFile = new File("animals.txt");
+        File animalsFile = new File("C:\\Users\\lucru\\Documents\\College\\Java\\2nd Quarter\\CA3\\ZooApp\\src\\main\\java\\com\\mycompany\\zooapp\\animals.txt");
         // functional variables
         int option; // menu option
         boolean cont = true; // terminate app
@@ -60,11 +60,7 @@ public class ZooApp {
                                             "please make sure that is in the same directory and named as 'animals.txt'");
                     } else { // read file if it exists, otherwise curse the user
                         try {
-                            Scanner fr = new Scanner(animalsFile);
-//                            Scanner fr = new Scanner(animalsFile); // Creating file reader object
-//                            
-//                            while (fr.hasNextLine()){totalLines++;}; // Getting total of lines
-//                            Animal[] animals = new Animal[totalLines/4]; // Creating empty object list
+                            Scanner fr = new Scanner(animalsFile);// Creating file reader object
                             
                             while(fr.hasNextLine()) { // Loops until there aren't more lines in the file
                                 boolean animalValid = true; // In case any data on animal is wrong the object will not be created
@@ -311,19 +307,38 @@ public class ZooApp {
                                         }
 
                                     } while (typeSearch != 9);
-                                    System.out.println("search by types..");
                                     break;
                                 case 2: // habitat search
-                                    System.out.println("search by habitat");
+                                    System.out.print("Please type the habitat that you're looking for: ");
+                                    String habitatSearch = sc.nextLine();
+                                    for(int i=0; i<animals.length; i++) {
+                                        if(animals[i].getHabitat().equals(habitatSearch.toLowerCase())) {
+                                            System.out.println(animals[i].getName()+" lives in this habitat!");
+                                            System.out.println("He is a "+animals[i].getSpecies());
+                                        }
+                                    }
                                     break;
                                 case 3: // name search
-                                    System.out.println("search by name");
+                                    System.out.print("Please type the name that you're looking for: ");
+                                    String nameSearch = sc.nextLine();
+                                    for(int i=0; i<animals.length; i++) {
+                                        if(animals[i].getName().equals(nameSearch.toLowerCase())) {
+                                            System.out.println(animals[i].getName()+" lives in "+animals[i].getHabitat());
+                                            System.out.println("He is a "+animals[i].getSpecies());
+                                        }
+                                    }
                                     break;
                                 case 4: // species search
-                                    System.out.println("search by species");
+                                    System.out.print("Please type the habitat that you're looking for: ");
+                                    String speciesSearch = sc.nextLine();
+                                    for(int i=0; i<animals.length; i++) {
+                                        if(animals[i].getSpecies().equals(speciesSearch.toLowerCase())) {
+                                            System.out.println(animals[i].getName()+" is a "+animals[i].getSpecies());
+                                            System.out.println("He lives in "+animals[i].getHabitat());
+                                        }
+                                    }
                                     break;
                                 case 9: // going one level above
-                                    System.out.println("going back if it works out");
                                     break;
                                 default: // data verification
                                     System.out.println("Invalid option, please try again");
