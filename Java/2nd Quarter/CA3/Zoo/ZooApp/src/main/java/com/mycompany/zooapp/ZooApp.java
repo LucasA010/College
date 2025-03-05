@@ -12,8 +12,10 @@ import java.text.SimpleDateFormat;
 public class ZooApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        
         // File location, please change when receiving CA :)
-        File animalsFile = new File("C:\\Users\\lucru\\Documents\\College\\Java\\2nd Quarter\\CA3\\ZooApp\\src\\main\\java\\com\\mycompany\\zooapp\\animals.txt");
+        File animalsFile = new File("./src/main/resources/animals.txt");
+        
         // functional variables
         int option; // menu option
         boolean cont = true; // terminate app
@@ -21,6 +23,7 @@ public class ZooApp {
         int lineCounter = 0; // line tracking for error management
         int totalLines =0; // total of lines in txt file
         int linesPerAnimal = 4; // number of lines per animal, store in a variable in case need to change
+        
         // Animal variables
         String type = "";
         String species = "";
@@ -29,10 +32,14 @@ public class ZooApp {
         Date dateOfBirth = null;
         double weight = 0;
         HashMap<String, String> comments = new HashMap<String, String>(); // Hash map for comments of each animal
+        // List of acceptable habitats
+        String[] line2Check = {"jungle", "mountain", "desert", "ocean", "grass", "swamp", "snow", "tundra"};
         
         try { // try catch to get size of file
             Scanner fr = new Scanner(animalsFile); // Creating file reader object
-            while (fr.hasNextLine()){totalLines++;}; // Getting total of lines
+            if (animalsFile.isFile()) {
+                while (fr.hasNextLine()){totalLines++; fr.nextLine();}; // Getting total of lines
+            }      
         } catch (Exception e){
             System.out.println("Line assignment failed");            
         }
@@ -61,7 +68,6 @@ public class ZooApp {
                     } else { // read file if it exists, otherwise curse the user
                         try {
                             Scanner fr = new Scanner(animalsFile);// Creating file reader object
-                            
                             while(fr.hasNextLine()) { // Loops until there aren't more lines in the file
                                 boolean animalValid = true; // In case any data on animal is wrong the object will not be created
                                 
@@ -71,7 +77,7 @@ public class ZooApp {
                                         case 1:
                                             String line1 = fr.nextLine(); // Getting data on line 1
                                             String[] line1Splitted = line1.split(","); // Splittign the data at the comme
-                                            lineCounter ++; // Incrementing line counter
+                                            lineCounter++; // Incrementing line counter
                                             
                                             // Check if all data is there since there must be 3 elements
                                             if (line1Splitted.length != 3) {
@@ -120,8 +126,7 @@ public class ZooApp {
                                         case 2:
                                             // Getting next line
                                             String line2 = fr.nextLine();
-                                            // List of acceptable habitats
-                                            String[] line2Check = {"jungle", "mountain", "desert", "ocean", "grass", "swamp", "snow", "tundra"};
+                                            
                                             lineCounter++; //Incrementing line
                                             
                                             // Data check for habitats
@@ -192,6 +197,9 @@ public class ZooApp {
                                                 System.out.println("There are elements missing on line "+lineCounter+" comments");
                                                 animalValid = false;
                                             } else { // if all data is there then data is assignedto hash map, using a loop for 2 in 2
+                                                if (!comments.isEmpty()) {
+                                                    comments.clear();
+                                                }
                                                 for (int l=0; l<line4Splitted.length; l+=2) {
                                                     comments.put(line4Splitted[l], line4Splitted[l+1]);
                                                 }
@@ -200,27 +208,26 @@ public class ZooApp {
                                     }
                                 }
                                 // assign variables and create proper objects in case all data is correct
-                                
                                 if (animalValid) {
                                     
                                     switch (type.toLowerCase()){
                                         case "fish":
-                                            animals[(lineCounter/linesPerAnimal)-1] = new Fish(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Fish(name, species, habitat, dateOfBirth, weight, comments, "fish");
                                             System.out.println("Fish created");
                                             break;
                                             
                                         case "mammal":
-                                            animals[(lineCounter/linesPerAnimal)-1] = new Mammal(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Mammal(name, species, habitat, dateOfBirth, weight, comments, "mammal");
                                             System.out.println("Mammal created");
                                             break;
                                             
                                         case "reptile":
-                                            animals[(lineCounter/linesPerAnimal)-1] = new Reptile(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Reptile(name, species, habitat, dateOfBirth, weight, comments, "reptile");
                                             System.out.println("Reptile created");
                                             break;
                                             
                                         case "bird":
-                                            animals[(lineCounter/linesPerAnimal)-1] = new Bird(name, species, habitat, dateOfBirth, weight, comments);
+                                            animals[(lineCounter/linesPerAnimal)-1] = new Bird(name, species, habitat, dateOfBirth, weight, comments, "bird");
                                             System.out.println("Bird created");
                                             break;
                                         default:
@@ -239,22 +246,23 @@ public class ZooApp {
                     
                 case 2: // display all animals
                     // only avaible if file is read - IMPORTANT
+                    // Loop to print all aniamsl
                     if (isRead) {
                         for (int i=0; i<animals.length; i++) { // Loop to print details of all animals in list
-                            System.out.println(i+" animal name is: "+animals[i].getName());
+                            System.out.println((i+1)+" animal name is: "+animals[i].getName());
                             System.out.println("From the species: "+animals[i].getSpecies());
                             System.out.println("Its natural habitat being: "+animals[i].getHabitat());
-                            System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString());
+                            System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString().substring(0, 10));
                             System.out.println("Currently weighting: "+animals[i].getWeight());
                             System.out.println("Additional commentary for the animal below: ");
-                            animals[i].getComments();
+                            for (String l:animals[i].getComments().keySet()) {
+                                System.out.println(l+": "+animals[i].getComments().get(l));
+                            }
                             System.out.println("");
                         }
                     } else {
                         System.out.println("You need to read the input file first!");
                     }
-                    // loop through animals list to display all animals
-                    // something like My name is bob, im a tortoise and I live in the swamp
                     break;
                     
                 case 3: // search surface level
@@ -263,41 +271,96 @@ public class ZooApp {
                             // only option with differente possibilities
                         int search;
                         // second loop for more precise search
+                        System.out.println("Please input your search option: ");
                         do {
                             System.out.print("\t1 - Types..\n"+
                                              "\t2 - Habitat\n"+
                                              "\t3 - Name\n"+
                                              "\t4 - Species\n"+
-                                             "\t9 - Previous menu");
+                                             "\t9 - Previous menu\n");
                             // user input for search
                             search = sc.nextInt();
 
                             switch(search) {
                                 case 1: // type; only option with more options
                                     int typeSearch;
-                                    
+                                    System.out.println("Please input the type you're looking for: ");
                                     // third loop 
                                     do {
                                         System.out.print("\t1 - Mammal\n"+
                                                         "\t2 - Bird\n"+
                                                         "\t3 - Reptile\n"+
                                                         "\t4 - Fish\n"+
-                                                        "\t9 - Previous menu");
+                                                        "\t9 - Previous menu\n");
                                         // user input for types
                                         typeSearch = sc.nextInt();
+                                        
                                         // third switch statement for type search
                                         switch(typeSearch) {
                                             case 1: // mammal search
-                                                animalDetails(animals, "mammal");
+                                                System.out.println(animals[0].getClass()+" this is snoopys name class");
+                                                for (int i=0; i<animals.length; i++) { // Loop to print dall mammals
+                                                    if (animals[i].getClassName().equals("mammal")) {
+                                                        System.out.println((i+1)+" animal name is: "+animals[i].getName());
+                                                        System.out.println("From the species: "+animals[i].getSpecies());
+                                                        System.out.println("Its natural habitat being: "+animals[i].getHabitat());
+                                                        System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString().substring(0, 10));
+                                                        System.out.println("Currently weighting: "+animals[i].getWeight());
+                                                        System.out.println("Additional commentary for the animal below: ");
+                                                        for (String l:animals[i].getComments().keySet()) {
+                                                            System.out.println(l+": "+animals[i].getComments().get(l));
+                                                        }
+                                                        System.out.println("");
+                                                    }
+                                                }
                                                 break;
                                             case 2: // bird search
-                                                animalDetails(animals, "bird");
+                                                for (int i=0; i<animals.length; i++) { // Loop to print dall birds
+                                                    if (animals[i].getClassName().equals("bird")) {
+                                                        System.out.println((i+1)+" animal name is: "+animals[i].getName());
+                                                        System.out.println("From the species: "+animals[i].getSpecies());
+                                                        System.out.println("Its natural habitat being: "+animals[i].getHabitat());
+                                                        System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString().substring(0, 10));
+                                                        System.out.println("Currently weighting: "+animals[i].getWeight());
+                                                        System.out.println("Additional commentary for the animal below: ");
+                                                        for (String l:animals[i].getComments().keySet()) {
+                                                            System.out.println(l+": "+animals[i].getComments().get(l));
+                                                        }
+                                                        System.out.println("");
+                                                    }
+                                                }
                                                 break;
                                             case 3: // reptile search
-                                                animalDetails(animals, "reptile");
+                                                for (int i=0; i<animals.length; i++) { // Loop to print dall reptiles
+                                                    if (animals[i].getClassName().equals("reptile")) {
+                                                        System.out.println((i+1)+" animal name is: "+animals[i].getName());
+                                                        System.out.println("From the species: "+animals[i].getSpecies());
+                                                        System.out.println("Its natural habitat being: "+animals[i].getHabitat());
+                                                        System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString().substring(0, 10));
+                                                        System.out.println("Currently weighting: "+animals[i].getWeight());
+                                                        System.out.println("Additional commentary for the animal below: ");
+                                                        for (String l:animals[i].getComments().keySet()) {
+                                                            System.out.println(l+": "+animals[i].getComments().get(l));
+                                                        }
+                                                        System.out.println("");
+                                                    }
+                                                }
                                                 break;
                                             case 4: // fish search
-                                                animalDetails(animals, "fish");
+                                                for (int i=0; i<animals.length; i++) { // Loop to print dall fishes
+                                                    if (animals[i].getClassName().equals("fish")) {
+                                                        System.out.println((i+1)+" animal name is: "+animals[i].getName());
+                                                        System.out.println("From the species: "+animals[i].getSpecies());
+                                                        System.out.println("Its natural habitat being: "+animals[i].getHabitat());
+                                                        System.out.println("Born at this date: "+animals[i].getDateOfBirth().toString().substring(0, 10));
+                                                        System.out.println("Currently weighting: "+animals[i].getWeight());
+                                                        System.out.println("Additional commentary for the animal below: ");
+                                                        for (String l:animals[i].getComments().keySet()) {
+                                                            System.out.println(l+": "+animals[i].getComments().get(l));
+                                                        }
+                                                        System.out.println("");
+                                                    }
+                                                }
                                                 break;
                                             case 9: // going one level above
                                                 break;
@@ -310,19 +373,23 @@ public class ZooApp {
                                     break;
                                 case 2: // habitat search
                                     System.out.print("Please type the habitat that you're looking for: ");
-                                    String habitatSearch = sc.nextLine();
-                                    for(int i=0; i<animals.length; i++) {
-                                        if(animals[i].getHabitat().equals(habitatSearch.toLowerCase())) {
+                                    String habitatSearch = sc.next(); //habitat search input
+                                    
+                                    for(int i=0; i<animals.length; i++) { // loop to print inputed habitat
+                                        if(animals[i].getHabitat().toLowerCase().equals(habitatSearch.toLowerCase())) {
                                             System.out.println(animals[i].getName()+" lives in this habitat!");
                                             System.out.println("He is a "+animals[i].getSpecies());
+                                        } else if (!Arrays.asList(line2Check).contains(habitatSearch)){
+                                            System.out.println("Habitat invalid");
                                         }
                                     }
                                     break;
                                 case 3: // name search
                                     System.out.print("Please type the name that you're looking for: ");
-                                    String nameSearch = sc.nextLine();
-                                    for(int i=0; i<animals.length; i++) {
-                                        if(animals[i].getName().equals(nameSearch.toLowerCase())) {
+                                    String nameSearch = sc.next(); //name search input
+                                    
+                                    for(int i=0; i<animals.length; i++) { // loop to print inputed name
+                                        if(animals[i].getName().toLowerCase().equals(nameSearch.toLowerCase())) {
                                             System.out.println(animals[i].getName()+" lives in "+animals[i].getHabitat());
                                             System.out.println("He is a "+animals[i].getSpecies());
                                         }
@@ -330,11 +397,11 @@ public class ZooApp {
                                     break;
                                 case 4: // species search
                                     System.out.print("Please type the habitat that you're looking for: ");
-                                    String speciesSearch = sc.nextLine();
-                                    for(int i=0; i<animals.length; i++) {
-                                        if(animals[i].getSpecies().equals(speciesSearch.toLowerCase())) {
+                                    String speciesSearch = sc.next(); //species search input
+                                    for(int i=0; i<animals.length; i++) { // loop to print inputed species
+                                        if(animals[i].getSpecies().toLowerCase().equals(speciesSearch.toLowerCase())) {
                                             System.out.println(animals[i].getName()+" is a "+animals[i].getSpecies());
-                                            System.out.println("He lives in "+animals[i].getHabitat());
+                                            System.out.println("He lives in "+animals[i].getHabitat()+" habitat");
                                         }
                                     }
                                     break;
@@ -358,20 +425,5 @@ public class ZooApp {
                     System.out.println("Invalid option, please input again");
             }
         } while (cont);
-    }
-    
-    public static void animalDetails(Animal[] animals, String search) {
-        for (int index=0; index<animals.length; index++) {
-            if(animals[index].getName().toLowerCase().equals(search)) {
-                System.out.println(index+" animal name is: "+animals[index].getName());
-                System.out.println("From the species: "+animals[index].getSpecies());
-                System.out.println("Its natural habitat being: "+animals[index].getHabitat());
-                System.out.println("Born at this date: "+animals[index].getDateOfBirth().toString());
-                System.out.println("Currently weighting: "+animals[index].getWeight());
-                System.out.println("Additional commentary for the animal below: ");
-                animals[index].getComments();
-                System.out.println("");
-            }
-        }
     }
 }

@@ -13,23 +13,34 @@ public class Animal {
     private Date dateOfBirth;
     private double weight;
     private HashMap<String, String> comments;
+    private String className;
     
     // Contructor
     public Animal(String name, 
-                       String species, 
-                       String habitat, 
-                       Date dateOfBirth, 
-                       double weight,
-                       HashMap comments) {
+                  String species, 
+                  String habitat, 
+                  Date dateOfBirth, 
+                  double weight,
+                  HashMap<String, String> comments,
+                  String className) {
         this.name = name;
         this.species = species;
         this.habitat = habitat;
         this.dateOfBirth = dateOfBirth;
         this.weight = weight;
-        this.comments = comments;
+        this.comments = (HashMap<String, String>) comments.clone();
+        this.className = className;
     
     // Constructor with comments variable
     
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getName() {
@@ -72,10 +83,8 @@ public class Animal {
         this.weight = weight;
     }
 
-    public void getComments() {
-        for (String l:comments.keySet()) {
-            System.out.println(l+": "+comments.get(l));
-        }
+    public HashMap<String, String> getComments() {
+        return this.comments;
     }
 
     public void setComments(HashMap<String, String> comments) {
