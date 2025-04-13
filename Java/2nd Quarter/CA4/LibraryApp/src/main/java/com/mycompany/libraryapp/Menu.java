@@ -34,19 +34,19 @@ public class Menu {
             option = sc.nextInt();
             
             switch (option) {
-                case 1:
+                case 1: // reserve a book
                     // function in different class to reserve book
                     break;
                 
-                case 2:
+                case 2: // return a book
                     // function in different class to return book
                     break;
                 
-                case 3:
+                case 3: // due dates
                     // function in different class to show due dates
                     break;
                 
-                case 4:
+                case 4: // admin - manage users
                     if (!isAdmin) {
                         System.out.println("Please input a valid option\n");
                         break;
@@ -59,15 +59,15 @@ public class Menu {
                     
                     do {
                         switch (option) {
-                            case 1:
+                            case 1: // add an user
                                 // function to add users
                                 break;
 
-                            case 2:
+                            case 2: // delete an user
                                 // function to delete users
                                 break;
 
-                            case -1:
+                            case -1: // return
                                 // returning to main menu
                                 break;
 
@@ -77,7 +77,7 @@ public class Menu {
                         }
                     } while (option > 0);
                 
-                case 5:
+                case 5: // admin - manage books
                     if (!isAdmin) {
                         System.out.println("Please input a valid option\n");
                         break;
@@ -90,11 +90,11 @@ public class Menu {
                     
                      do {
                         switch (option) {
-                            case 1:
+                            case 1: // add a book
                                 // function to add books
                                 break;
 
-                            case 2:
+                            case 2: // delete a book
                                 // function to delete books
                                 break;
 
@@ -107,9 +107,6 @@ public class Menu {
                                 break;
                         }
                     } while (option > 0);
-                    
-                    
-                    // function in different class to manage users
                     break;
                 
                 case -1:

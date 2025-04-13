@@ -14,10 +14,9 @@ public class Users {
     private String email;
     private String password;
     
-    public Users (String name, String email, String password){
+    public Users (String name, String email){
         this.name = name;
         this.email = email;
-        this.password = password;
     }
 
     public int getID() {
@@ -39,13 +38,4 @@ public class Users {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
 }

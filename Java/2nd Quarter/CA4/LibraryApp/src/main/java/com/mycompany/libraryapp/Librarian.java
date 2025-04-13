@@ -9,18 +9,18 @@ package com.mycompany.libraryapp;
  * @author lucru
  */
 public class Librarian extends Users{
-    private String role;
+    private boolean role;
     
-    public Librarian (String name, String role, String email, String password) {
-        super(name, email, password);
-        this.role = "Librarian";
+    public Librarian (String name, boolean role, String email) {
+        super(name, email);
+        this.role = role;
     }
 
-    public String getRole() {
+    public boolean getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(boolean role) {
         this.role = role;
     }
 }
