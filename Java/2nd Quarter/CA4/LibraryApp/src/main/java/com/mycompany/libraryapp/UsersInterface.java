@@ -9,6 +9,6 @@ package com.mycompany.libraryapp;
  * @author lucru
  */
 public interface UsersInterface {
-    void deleteUser(Users user);
+    void deleteUser(String user);
     void addUser(String name, String role, String email, String password);
 }

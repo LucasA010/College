@@ -10,28 +10,34 @@ import java.util.Scanner;
  * @author lucru
  */
 public class Menu {
+    private final Scanner sc = new Scanner(System.in);
+    private final InputHandler inpHandler = new InputHandler();
     
-    public void menu(Boolean isAdmin) {
+    public void menu(Users user) {
           // menu
-//        Boolean isAdmin = true; // variable to check user privileges
-        Scanner sc = new Scanner(System.in);
+        var bookManager = new BookManager();
+        var userManager = new UsersManager();
         Boolean cont = true;
         int option;
+        int subOption;
+        boolean isAdmin = user.getRole();
+        boolean confirm;
+        boolean finished;
         
         do {
             // menu for members
             // condition to only trigger this menu in case user is a member
-            System.out.println( "Please select an option:\n"+
-                                "1 - Reserve a book\n"+
-                                "2 - Return a book\n"+
-                                "3 - Books due dates");
+            System.out.println("Please select an option: ");
+            System.out.println("1 - Reserve a book");
+            System.out.println("2 - Return a book");
+            System.out.println("3 - Books due dates");
             if (isAdmin){ // condition for admin options
-                System.out.println( "4 - Manage Books\n"+
-                                    "5 - Manage Users");
+                System.out.println("4 - Users menu");
+                System.out.println("5 - Books menu");
             }
             System.out.println( "-1 - Exit Program");
             
-            option = sc.nextInt();
+            option = inpHandler.getInt("Type your option -> ");
             
             switch (option) {
                 case 1: // reserve a book
@@ -51,62 +57,132 @@ public class Menu {
                         System.out.println("Please input a valid option\n");
                         break;
                     }
-                    System.out.println( "Please select an option:\n" +
-                                        "1 - Add an User\n"+
-                                        "2 - Delete an User\n"+
-                                        "-1 - Return");
-                    option = sc.nextInt();
                     
                     do {
-                        switch (option) {
+                        System.out.println( "Please select an option:");
+                        System.out.println("1 - Add an User");
+                        System.out.println("2 - Delete an User");
+                        System.out.println("-1 - Return");
+                        subOption =  inpHandler.getInt("Type your option -> ");
+                        
+                        switch (subOption) {
                             case 1: // add an user
-                                // function to add users
+                                String name, role, email, password;
+                                
+                                name = inpHandler.getString("Please type the name: ");
+                                role = inpHandler.getRole("Please type the role: ");
+                                email = inpHandler.getEmail("Please type the email: ");
+                                password = inpHandler.getString("Please type the password: ");
+                                
+                                userManager.addUser(name, role, email, password);
                                 break;
 
                             case 2: // delete an user
-                                // function to delete users
+                                finished = false;
+                                do {
+                                    String nameDeletion = inpHandler.getString("Please type the name of the user you wish to delete");
+                                    
+                                    try {
+                                        confirm = inpHandler.getBoolean("Are you sure you want to proceed? ");
+
+                                        if (confirm) {
+                                            userManager.deleteUser(nameDeletion);
+                                            finished = true;
+                                            
+                                        }
+                                    } catch (Exception e){
+                                        System.out.println("Input is wrong");
+
+                                    };
+                                } while (!finished);
+                                
                                 break;
 
                             case -1: // return
-                                // returning to main menu
+                                System.out.println("Returning to main menu");
                                 break;
 
                             default:
                                 System.out.println("Please input a valid option\n");
                                 break;
                         }
-                    } while (option > 0);
+                    } while (subOption != -1);
+                    break;
                 
                 case 5: // admin - manage books
                     if (!isAdmin) {
                         System.out.println("Please input a valid option\n");
                         break;
                     }
-                    System.out.println( "Please select an option:\n" +
-                                        "1 - Add a Book\n"+
-                                        "2 - Delete a Book\n"+
-                                        "-1 - Return");
-                    option = sc.nextInt();
+                    
+                    
                     
                      do {
-                        switch (option) {
+                        System.out.println( "Please select an option:");
+                        System.out.println("1 - Add a Book");
+                        System.out.println("2 - Delete a Book");
+                        System.out.println("-1 - Return");
+                         
+                        subOption = inpHandler.getInt("Type your option -> ");
+                         
+                        switch (subOption) {
+                            
                             case 1: // add a book
-                                // function to add books
+                                finished = false;
+                                String title, author, genre;
+                                do {
+                                    title = inpHandler.getString("Please type the book Title:");
+                                    author = inpHandler.getString("Please type the book Author: ");
+                                    genre = inpHandler.getString("lease type the book Genre: ");
+                                    
+                                    System.out.println("Are the details correct?");
+                                    System.out.println("Title: " + title);
+                                    System.out.println("Author: " + author);
+                                    System.out.println("Genre: " + genre);
+                                    
+                                    try {
+                                        confirm = inpHandler.getBoolean("Are the details correct? ");
+
+                                        if (confirm) {
+                                            bookManager.addBook(title, author, genre);
+                                            finished = true;
+                                            
+                                        }
+                                    } catch (Exception e){
+                                        System.out.println("Input is wrong");
+
+                                    };
+                                } while (!finished);
                                 break;
 
                             case 2: // delete a book
-                                // function to delete books
+                                finished = false;
+                                
+                                do {
+                                    try {
+                                        String bookDeletion = inpHandler.getString("Please type the book Title: ");
+                                        confirm = inpHandler.getBoolean("Is the title of the book correct? "+bookDeletion);
+
+                                        if (confirm) {
+                                            bookManager.deleteBook(bookDeletion);
+                                            finished = true;
+                                            break;
+                                        }
+                                    } catch (Exception e){
+                                        System.out.println("Input is wrong");
+                                    };
+                                } while (!finished);
                                 break;
 
                             case -1:
-                                // returning to main menu
+                                System.out.println("Returning to main menu");
                                 break;
 
                             default:
-                                System.out.println("Please input a valid option\n");
+                                System.out.println("Please input a valid option");
                                 break;
                         }
-                    } while (option > 0);
+                    } while (subOption != -1);
                     break;
                 
                 case -1:

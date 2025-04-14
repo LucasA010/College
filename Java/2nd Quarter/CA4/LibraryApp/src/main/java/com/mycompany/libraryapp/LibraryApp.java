@@ -13,21 +13,19 @@ public class LibraryApp {
 
     public static void main(String[] args) {
         DatabaseManager dbm = new DatabaseManager();
+        InputHandler inpHandler = new InputHandler();
         Scanner sc = new Scanner(System.in);
         Menu menu = new Menu();
         
-        boolean[] access;        
+        
+        LogInResult access;        
         String email;
         String password;
+        Users currUser;
         
         
         do {
-            System.out.print("Please type your email: ");
-            email = sc.nextLine();
-            while (!email.matches("^[\\w.-]+@[a-zA-Z]+\\.(com)$")) {
-                System.out.println("Invalid email, please try again");
-                email = sc.nextLine();
-            }
+            email = inpHandler.getEmail("Please type your email");
             
             // make checking for correct password 
             System.out.print("Now please type your password: ");
@@ -35,15 +33,22 @@ public class LibraryApp {
 
             // returns two booleans, one for login and other for admin access
             access = dbm.logIn(email, password);
-
-            if (!access[0]) {
+            if (access.getUser() == null) {
+                System.out.println("User is undefined");
+                break;
+            } else {
+                currUser = access.getUser();
+            }
+            
+            
+            if (!access.isSuccess()) {
                 System.out.println("Credentials are wrong, please try again");
             } else {
-                menu.menu(access[1]); //menuception
+                menu.menu(currUser); //menuception
             }
 
             
-        } while (!access[0]);
+        } while (!access.isSuccess());
         
        
        

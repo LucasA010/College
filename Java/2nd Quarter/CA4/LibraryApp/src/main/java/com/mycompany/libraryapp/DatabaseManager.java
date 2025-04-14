@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 /**
  *
  * @author lucru
@@ -40,42 +41,50 @@ public class DatabaseManager {
         }
     }
     
-    public boolean[] logIn(String email, String password) {
+    public LogInResult logIn(String email, String password) {
         if (!isConnected()){
             System.out.println("something went wrong with the database connection");
         };
+        
+        LogInResult currUser = null;
+        String passwordCheck = "";
+        String adminCheck = "";
         
         try {
             String query  = "SELECT * FROM users WHERE Email = ?";
             
             Connection con = DriverManager.getConnection(url, username, serverPassword);
             PreparedStatement prepStat = con.prepareStatement(query);
-            
             prepStat.setString(1, email);
             
             ResultSet resSet = prepStat.executeQuery();
             
-            String passwordCheck = resSet.getString("Password");
-            String adminCheck = resSet.getString("Role");
+            if (resSet.next()) {
+                passwordCheck = resSet.getString("Password");
+                adminCheck = resSet.getString("Role");
+            }
+            
             
             if (password.equals(passwordCheck)) { // first check to credentials
                 System.out.println("Login successful!");
+                if (adminCheck.equals("Librarian")) { // second check for admin access
+                    currUser = new LogInResult(true, new Librarian(resSet.getString("Name"), true, resSet.getString("Email")));
+                
+                } else {
+                    currUser = new LogInResult(true, new Members(resSet.getString("Name"), false, resSet.getString("Email")));
+                }
             } else {
                 System.out.println("Password doesn't match");
-                return new boolean[] {false, false};
+                return currUser;
             }
             
-            if (adminCheck.equals("Librarian")) { // second check for admin access
-                Users currUser = new Librarian(resSet.getString("Name"), true, resSet.getString("Email"));
-                
-                return new boolean[] {true, true};
-            } else {
-                Users currUser = new Members(resSet.getString("Name"), false, resSet.getString("Email"));
-                return new boolean[] {true, false};
-            }
+            
+            return currUser;
         } catch (Exception e) {
             System.out.println("Email not found");
-            return new boolean[] {false, false};
+            System.out.println("This is the error");
+            e.printStackTrace();
+            return currUser;
         }
     }
 }

@@ -16,6 +16,7 @@ public class Librarian extends Users{
         this.role = role;
     }
 
+    @Override
     public boolean getRole() {
         return role;
     }

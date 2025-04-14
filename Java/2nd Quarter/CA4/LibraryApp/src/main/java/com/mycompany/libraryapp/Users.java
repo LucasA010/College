@@ -38,4 +38,8 @@ public class Users {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    protected boolean getRole() {
+        return false;
+    };
 }

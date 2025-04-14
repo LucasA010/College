@@ -15,7 +15,8 @@ public class Members extends Users {
         super(name, email);
         this.role = role;
     }
-
+    
+    @Override
     public boolean getRole() {
         return role;
     }

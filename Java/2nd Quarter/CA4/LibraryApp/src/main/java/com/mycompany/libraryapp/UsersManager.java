@@ -12,14 +12,18 @@ import java.sql.PreparedStatement;
  * @author lucru
  */
 public class UsersManager extends DatabaseManager implements UsersInterface{
-    public void deleteUser(Users user) {
-        isConnected(); 
+    private final InputHandler inpHandler = new InputHandler();
+    
+    public void deleteUser(String user) {
+        if (!isConnected()){
+            System.out.println("something went wrong with the database connection");
+        };
         
         String query = "DELETE FROM users WHERE Name = ?";
         try {
             Connection con = DriverManager.getConnection(url, username, serverPassword);
             PreparedStatement prepStat = con.prepareStatement(query);
-            prepStat.setString(1, user.getName());
+            prepStat.setString(1, user);
 
             int rowsAffected = prepStat.executeUpdate();
 
@@ -36,7 +40,9 @@ public class UsersManager extends DatabaseManager implements UsersInterface{
     }
     
     public void addUser(String name, String role, String email, String password) {
-        isConnected(); 
+        if (!isConnected()){
+            System.out.println("something went wrong with the database connection");
+        };
         
         String query = "INSERT INTO users (Name, Role, Email, Password) VALUES (?, ?, ?, ?)";
         try {
