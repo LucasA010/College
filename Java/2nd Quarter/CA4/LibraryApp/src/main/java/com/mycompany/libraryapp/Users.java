@@ -9,7 +9,7 @@ package com.mycompany.libraryapp;
  * @author lucru
  */
 public class Users {
-    private int ID;
+    protected int ID;
     private String name;
     private String email;
     private String password;

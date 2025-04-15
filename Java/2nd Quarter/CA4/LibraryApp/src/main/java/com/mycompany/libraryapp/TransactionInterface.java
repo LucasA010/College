@@ -8,11 +8,7 @@ package com.mycompany.libraryapp;
  *
  * @author lucru
  */
-public interface BookInterface {
-    void deleteBook(String name);
-    void addBook(String title, String author, String genre);
-    void reserveBook(String bookName);
-    void returnBook(String bookName);
-    void dueDates();
-    
+public interface TransactionInterface {
+    void createTransaction();
+    void printTransactions();
 }

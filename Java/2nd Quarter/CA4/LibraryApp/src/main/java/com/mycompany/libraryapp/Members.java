@@ -11,9 +11,10 @@ package com.mycompany.libraryapp;
 public class Members extends Users {
     private boolean role;
     
-    public Members (String name, boolean role, String email) {
+    public Members (int ID, String name, boolean role, String email) {
         super(name, email);
         this.role = role;
+        this.ID = ID;
     }
     
     @Override

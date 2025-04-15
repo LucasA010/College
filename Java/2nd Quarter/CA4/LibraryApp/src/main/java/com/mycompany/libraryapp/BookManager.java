@@ -7,6 +7,7 @@ package com.mycompany.libraryapp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 /**
  *
  * @author lucru
@@ -66,13 +67,75 @@ public class BookManager extends DatabaseManager implements BookInterface {
     }
 
     @Override
-    public void reserveBook() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void reserveBook(String bookName) {
+        String updateQuery = "UPDATE books SET Availability = ? WHERE Title = ?";
+        String statusQuery = "SELECT Availability FROM books WHERE Title = ?";
+        
+        try (Connection con = DriverManager.getConnection(url, username, serverPassword)) {
+            PreparedStatement statusPrepStat = con.prepareStatement(statusQuery);
+            statusPrepStat.setString(1, bookName);
+            
+            ResultSet resSet = statusPrepStat.executeQuery();
+            
+            if (resSet.next()) {
+                String bookStatus = resSet.getString("Availability");
+                
+                if (bookStatus.equalsIgnoreCase("Avaiable")) {
+                    PreparedStatement updatePrepStat = con.prepareStatement(updateQuery);
+                    updatePrepStat.setString(1, "Checked Out");
+                    updatePrepStat.setString(2, bookName);
+                    
+                    int rowsAffected = updatePrepStat.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Book reserved successfully");
+                    }
+                } else {
+                    System.out.println("Book is not avaiable");
+                }
+            } else {
+                System.out.println("Book not found");
+            } 
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+            e.printStackTrace();
+        }
+        
     }
 
     @Override
-    public void returnBook() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void returnBook(String bookName) {
+        String updateQuery = "UPDATE books SET Availability = ? WHERE Title = ?";
+        String statusQuery = "SELECT Availability FROM books WHERE Title = ?";
+        
+        try (Connection con = DriverManager.getConnection(url, username, serverPassword)) {
+            PreparedStatement statusPrepStat = con.prepareStatement(statusQuery);
+            statusPrepStat.setString(1, bookName);
+            
+            ResultSet resSet = statusPrepStat.executeQuery();
+            
+            if (resSet.next()) {
+                String bookStatus = resSet.getString("Availability");
+                
+                if (bookStatus.equalsIgnoreCase("Checked Out")) {
+                    PreparedStatement updatePrepStat = con.prepareStatement(updateQuery);
+                    updatePrepStat.setString(1, "Avaiable");
+                    updatePrepStat.setString(2, bookName);
+                    
+                    int rowsAffected = updatePrepStat.executeUpdate();
+                    
+                    if (rowsAffected > 0) {
+                        System.out.println("Book returned successfully");
+                    }
+                } else {
+                    System.out.println("Book is already returned");
+                }
+            } else {
+                System.out.println("No books with that Title were found");
+            }
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+            e.printStackTrace();
+        }
     }
 
     @Override

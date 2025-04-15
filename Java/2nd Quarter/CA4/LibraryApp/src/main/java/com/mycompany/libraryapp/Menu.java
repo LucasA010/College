@@ -10,7 +10,6 @@ import java.util.Scanner;
  * @author lucru
  */
 public class Menu {
-    private final Scanner sc = new Scanner(System.in);
     private final InputHandler inpHandler = new InputHandler();
     
     public void menu(Users user) {
@@ -41,11 +40,15 @@ public class Menu {
             
             switch (option) {
                 case 1: // reserve a book
-                    // function in different class to reserve book
+                    String bookReservation = inpHandler.getString("Type the book Title you wish to checkout");
+                    
+                    bookManager.reserveBook(bookReservation);
                     break;
                 
                 case 2: // return a book
-                    // function in different class to return book
+                    String bookReturn = inpHandler.getString("Type the book Title you wish to return");
+                    
+                    bookManager.reserveBook(bookReturn);
                     break;
                 
                 case 3: // due dates
@@ -185,9 +188,9 @@ public class Menu {
                     } while (subOption != -1);
                     break;
                 
-                case -1:
+                case -1: //exit program
                     cont = false;
-                    //exit program
+                    
                     break;
                     
                 default:

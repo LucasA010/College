@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 /**
  *
  * @author lucru
@@ -49,6 +48,7 @@ public class DatabaseManager {
         LogInResult currUser = null;
         String passwordCheck = "";
         String adminCheck = "";
+        int userID = 0;
         
         try {
             String query  = "SELECT * FROM users WHERE Email = ?";
@@ -62,16 +62,17 @@ public class DatabaseManager {
             if (resSet.next()) {
                 passwordCheck = resSet.getString("Password");
                 adminCheck = resSet.getString("Role");
+                userID = resSet.getInt("ID");
             }
             
             
             if (password.equals(passwordCheck)) { // first check to credentials
                 System.out.println("Login successful!");
                 if (adminCheck.equals("Librarian")) { // second check for admin access
-                    currUser = new LogInResult(true, new Librarian(resSet.getString("Name"), true, resSet.getString("Email")));
+                    currUser = new LogInResult(true, new Librarian(userID, resSet.getString("Name"), true, resSet.getString("Email")));
                 
                 } else {
-                    currUser = new LogInResult(true, new Members(resSet.getString("Name"), false, resSet.getString("Email")));
+                    currUser = new LogInResult(true, new Members(userID, resSet.getString("Name"), false, resSet.getString("Email")));
                 }
             } else {
                 System.out.println("Password doesn't match");
