@@ -8,6 +8,16 @@ package com.mycompany.libraryapp;
  *
  * @author lucru
  */
-public class TransactionManager {
+public class TransactionManager extends DatabaseManager implements TransactionInterface {
+
+    @Override
+    public void createTransaction() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void printTransactions() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
