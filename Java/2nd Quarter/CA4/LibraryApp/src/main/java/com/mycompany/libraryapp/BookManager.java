@@ -13,6 +13,7 @@ import java.sql.ResultSet;
  * @author lucru
  */
 public class BookManager extends DatabaseManager implements BookInterface {
+    private final TransactionManager transaction = new TransactionManager();
     
     public void deleteBook(String name) {
         if (!isConnected()){
@@ -51,7 +52,7 @@ public class BookManager extends DatabaseManager implements BookInterface {
             prepStat.setString(1, title);
             prepStat.setString(2, author);
             prepStat.setString(3, genre);
-            prepStat.setString(4, "Avaiable");
+            prepStat.setString(4, "Available");
             
             int rowsAffected = prepStat.executeUpdate();
             
@@ -67,7 +68,7 @@ public class BookManager extends DatabaseManager implements BookInterface {
     }
 
     @Override
-    public void reserveBook(String bookName) {
+    public void reserveBook(String bookName, Users user) {
         String updateQuery = "UPDATE books SET Availability = ? WHERE Title = ?";
         String statusQuery = "SELECT Availability FROM books WHERE Title = ?";
         
@@ -79,8 +80,9 @@ public class BookManager extends DatabaseManager implements BookInterface {
             
             if (resSet.next()) {
                 String bookStatus = resSet.getString("Availability");
+                int bookID = resSet.getInt("ID");
                 
-                if (bookStatus.equalsIgnoreCase("Avaiable")) {
+                if (bookStatus.equalsIgnoreCase("Available")) {
                     PreparedStatement updatePrepStat = con.prepareStatement(updateQuery);
                     updatePrepStat.setString(1, "Checked Out");
                     updatePrepStat.setString(2, bookName);
@@ -88,9 +90,10 @@ public class BookManager extends DatabaseManager implements BookInterface {
                     int rowsAffected = updatePrepStat.executeUpdate();
                     if (rowsAffected > 0) {
                         System.out.println("Book reserved successfully");
+                        transaction.createTransaction(bookID, user.getID(), "Rented");
                     }
                 } else {
-                    System.out.println("Book is not avaiable");
+                    System.out.println("Book is not Available");
                 }
             } else {
                 System.out.println("Book not found");
@@ -103,7 +106,7 @@ public class BookManager extends DatabaseManager implements BookInterface {
     }
 
     @Override
-    public void returnBook(String bookName) {
+    public void returnBook(String bookName, Users user) {
         String updateQuery = "UPDATE books SET Availability = ? WHERE Title = ?";
         String statusQuery = "SELECT Availability FROM books WHERE Title = ?";
         
@@ -115,6 +118,7 @@ public class BookManager extends DatabaseManager implements BookInterface {
             
             if (resSet.next()) {
                 String bookStatus = resSet.getString("Availability");
+                int bookID = resSet.getInt("ID");
                 
                 if (bookStatus.equalsIgnoreCase("Checked Out")) {
                     PreparedStatement updatePrepStat = con.prepareStatement(updateQuery);
@@ -125,6 +129,7 @@ public class BookManager extends DatabaseManager implements BookInterface {
                     
                     if (rowsAffected > 0) {
                         System.out.println("Book returned successfully");
+                        transaction.updateTransaction(bookID, user.getID());
                     }
                 } else {
                     System.out.println("Book is already returned");
@@ -136,10 +141,5 @@ public class BookManager extends DatabaseManager implements BookInterface {
             System.out.println("Something went wrong");
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void dueDates() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

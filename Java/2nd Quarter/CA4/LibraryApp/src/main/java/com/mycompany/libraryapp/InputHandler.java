@@ -57,7 +57,7 @@ public class InputHandler {
         System.out.println(prompt);
         String role = sc.nextLine();
         
-        while (!role.equals("Librarian") || !role.equals("Member")) {
+        while (!role.equals("Librarian") && !role.equals("Member")) {
             System.out.println("Invalid option, please type either 'Librarian' or 'Member'");
             role = sc.nextLine();
         }

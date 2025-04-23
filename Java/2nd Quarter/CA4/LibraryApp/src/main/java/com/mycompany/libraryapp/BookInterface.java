@@ -11,8 +11,6 @@ package com.mycompany.libraryapp;
 public interface BookInterface {
     void deleteBook(String name);
     void addBook(String title, String author, String genre);
-    void reserveBook(String bookName);
-    void returnBook(String bookName);
-    void dueDates();
-    
+    void reserveBook(String bookName, Users user);
+    void returnBook(String bookName, Users user);
 }

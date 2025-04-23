@@ -16,6 +16,7 @@ public class Menu {
           // menu
         var bookManager = new BookManager();
         var userManager = new UsersManager();
+        var rentHistory = new TransactionManager();
         Boolean cont = true;
         int option;
         int subOption;
@@ -27,7 +28,7 @@ public class Menu {
             // menu for members
             // condition to only trigger this menu in case user is a member
             System.out.println("Please select an option: ");
-            System.out.println("1 - Reserve a book");
+            System.out.println("1 - Check out a book");
             System.out.println("2 - Return a book");
             System.out.println("3 - Books due dates");
             if (isAdmin){ // condition for admin options
@@ -42,17 +43,17 @@ public class Menu {
                 case 1: // reserve a book
                     String bookReservation = inpHandler.getString("Type the book Title you wish to checkout");
                     
-                    bookManager.reserveBook(bookReservation);
+                    bookManager.reserveBook(bookReservation, user);
                     break;
                 
                 case 2: // return a book
                     String bookReturn = inpHandler.getString("Type the book Title you wish to return");
                     
-                    bookManager.reserveBook(bookReturn);
+                    bookManager.returnBook(bookReturn, user);
                     break;
                 
                 case 3: // due dates
-                    // function in different class to show due dates
+                    rentHistory.printTransactions(user.getID());
                     break;
                 
                 case 4: // admin - manage users

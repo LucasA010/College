@@ -9,6 +9,7 @@ package com.mycompany.libraryapp;
  * @author lucru
  */
 public interface TransactionInterface {
-    void createTransaction();
-    void printTransactions();
+    void createTransaction(int bookID, int userID, String status);
+    void printTransactions(int userID);
+    void updateTransaction(int bookID, int userID);
 }
