@@ -27,9 +27,14 @@
     function App() {
         // const [varName, function] = useState(initialValue);
         const [count, setCount] = useState(0);
+        const [imageIndex, changeImageIndex] = useState(0);
 
         function buttonclick() {
             setCount(count+1);
+        }
+
+        function changeImage() {
+            changeImageIndex((imageIndex+1)%imageDataArray.length);
         }
 
         const paragraphs = [];
@@ -48,6 +53,12 @@
             MusicComponents.push(<MusicData Music={Music}/>);
         })
         
+        const imageDataArray = [
+            {src: "img1.png", alt: "test1"},
+            {src: "img2.png", alt: "test2"},
+            {src: "img3.png", alt: "test3"},
+        ]
+
         // can only return one html element at a time
         // but the elemente can have multiple childs
         return ( 
@@ -56,6 +67,8 @@
                 <p>What you buying</p>
                 <CountButton buttonclick={buttonclick} count={count}/>
                 <Paragraph paragraphName={"Juan"}/>
+                <Image imageData={imageDataArray[imageIndex]}/>
+                <ChangeImageButton changeImage={changeImage}/>
                 {MusicComponents}
                 {paragraphs}
             </div>
@@ -83,6 +96,18 @@
                     <li>Rating: {Music.rating}/5</li>
                 </ul>
             </article>
+        )
+    }
+
+    function Image({imageData}) {
+        return(
+            <img src={imageData.src} alt={imageData.alt}/>
+        )
+    }
+
+    function ChangeImageButton({changeImage}) {
+        return(
+            <button onClick={changeImage}>Change Image</button>
         )
     }
 

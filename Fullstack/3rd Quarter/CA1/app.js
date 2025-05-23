@@ -3,6 +3,7 @@ import bodyParser from "body-parser"
 import mongoose from "mongoose";
 import connectMongodbSession from "connect-mongodb-session"
 import session from "express-session";
+import {WebSocketServer, WebSocket} from "ws";
 
 
 const MongoDBStore = connectMongodbSession(session);
@@ -38,6 +39,36 @@ app.get("/login", (req, res) => {
     res.render("login.ejs")
 })
 
-app.listen(PORT, () => {
+// http server
+const httpServer = app.listen(PORT, () => {
     console.log(`listening on port: ${PORT}`);    
+})
+
+// ws Server
+const wsServer = new WebSocketServer({noServer:true});
+
+// initial handshake
+httpServer.on("upgrade", async (request, socket, head) => {
+    wsServer.handleUpgrade(request, socket, head, (ws) => {
+        wsServer.emit("connection", ws, request);
+        console.log("Connection Handshake sucessfull");
+    })
+})
+
+wsServer.on("connection", (ws) => {
+    ws.on("message", (message) => {
+        const parsedMessage = JSON.parse(message.toString());
+        console.log(parsedMessage.newMessage);
+        console.log(parsedMessage.divText);
+        
+        wsServer.clients.forEach( client => {
+            if (client.readyState == WebSocket.OPEN) {
+                console.log("sending data")
+                client.send(JSON.stringify({
+                    divNum: parsedMessage.divNum,
+                    divText: parsedMessage.divText
+                }))
+            }
+        })
+    })
 })
