@@ -10,6 +10,8 @@ socket.onopen = () => {
 // receiving from the server
 socket.onmessage = (event) => {
     const parsedData = JSON.parse(event.data);
+    console.log(parsedData.divText+" this is the div text")
+    console.log(JSON.stringify(parsedData.divnum)+"this is the div num")
     divList[parsedData.divNum].innerText = parsedData.divText;
 
 }
