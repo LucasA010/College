@@ -31,6 +31,10 @@ app.use(session({
     }, err => console.log(err))
 }))
 
+app.get("/", (req, res) => {
+    res.render("home.ejs")
+})
+
 app.get("/game", (req, res) => {
     res.render("board.ejs")
 })
