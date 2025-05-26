@@ -31,10 +31,6 @@ app.use(session({
     }, err => console.log(err))
 }))
 
-app.get("/", (req, res) => {
-    res.render("home.ejs")
-})
-
 app.get("/game", (req, res) => {
     res.render("board.ejs")
 })
@@ -51,7 +47,7 @@ const httpServer = app.listen(PORT, () => {
 // ws Server
 const wsServer = new WebSocketServer({noServer:true});
 
-// initial handshake
+// initial handshake with user
 httpServer.on("upgrade", async (request, socket, head) => {
     wsServer.handleUpgrade(request, socket, head, (ws) => {
         wsServer.emit("connection", ws, request);
@@ -59,13 +55,14 @@ httpServer.on("upgrade", async (request, socket, head) => {
     })
 })
 
+// response when user sends data
 wsServer.on("connection", (ws) => {
     ws.on("message", (message) => {
-        const parsedMessage = JSON.parse(message.toString());
+        const parsedMessage = JSON.parse(message.toString()); // convert data to readable data
         console.log(parsedMessage.newMessage);
         console.log(parsedMessage.divText);
         
-        wsServer.clients.forEach( client => {
+        wsServer.clients.forEach( client => { // loop to send reveiced data to all connected
             if (client.readyState == WebSocket.OPEN) {
                 console.log("sending data")
                 client.send(JSON.stringify({
