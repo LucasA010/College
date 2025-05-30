@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
-    <form action="/login" method="post">
+    <form action="/register" method="post">
         <h2>Registration</h2>
         <!-- username field -->
         <label for="username">Username: </label>
         <input type="text" name="username" id="username">
+        <!-- email field -->
+         <label for="email">Email: </label>
+         <input type="email" name="email" id="email">
         <!-- password field -->
         <label for="password">Password: </label>
         <input type="password" name="password" id="password">
-        <label for="password">Repeat Password: </label>
-        <input type="password" name="password" id="password">
+        <label for="passwordCheck">Repeat Password: </label>
+        <input type="password" name="passwordCheck" id="passwordCheck">
         <!-- submit button -->
         <button type="submit" id="submit">Register</button>
         
