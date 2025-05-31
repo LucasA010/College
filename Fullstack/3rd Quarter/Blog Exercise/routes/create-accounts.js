@@ -23,7 +23,7 @@ router.post("/", (req, res) => {
         passport.authenticate("local", {failureRedirect: "/login2"})  (req, res, () => {
             res.redirect("/?pagenum=1");
         })
-    })
+        })
 });
 
 export default router;

@@ -1,5 +1,7 @@
+// express
 import express from "express";
-import bodyParser from "body-parser"
+import bodyParser from "body-parser";
+
 import mongoose from "mongoose";
 import connectMongodbSession from "connect-mongodb-session"
 import session from "express-session";
@@ -7,19 +9,14 @@ import {WebSocketServer, WebSocket} from "ws";
 import {User} from "./schema.js"
 import passport from "./config/passportConfig.js";
 
+import credentialRouter from "./routes/credentialsRoute.js"
+
 const PORT = 3000;
 const app = express();
 
-// const Schema = mongoose.Schema;
+
 const MongoDBStore = connectMongodbSession(session);
-// const userSchema = new Schema({
-//     username: String,
-//     email: String
-// })
 
-// userSchema.plugin(passportLocalMongoose) //hash and salt
-
-// const User = mongoose.model("User", userSchema)
 
 
 // express setup
@@ -50,15 +47,13 @@ app.use(session({
 app.use(passport.initialize()) // starts passport
 app.use(passport.session()) //link passport with session
 
-// passport.use(User.createStrategy()); // creates a passport Local Strategy
-// passport.serializeUser(User.serializeUser()); // store ID in session
-// passport.deserializeUser(User.deserializeUser()); // fetches user from DB
 
 app.get("/", (req, res) => {
     if (!req.isAuthenticated()) {
         res.redirect("/login")
         return;
     }
+    console.log(req.user.username)
     res.render("home.ejs")
 })
 
@@ -66,37 +61,11 @@ app.get("/game", (req, res) => {
     res.render("board.ejs")
 })
 
-app.get("/register", (req, res) => {
-    res.render("register.ejs")
-})
-
-app.post("/register", (req, res) => {
-    // if (!req.isAuthenticated()) {
-    //     res.redirect("/login")
-    //     return;
-    // }
-    console.log("inside register")
-    User.register(new User ({
-        username: req.body.username,
-        email: req.body.email
-    }), req.body.password, (error, user) => {
-            if (error) console.log(error);
-            console.log("Created");
-            passport.authenticate("local", {failureRedirect: "/login"})  (req, res, () => {
-                res.render("home.ejs");
-            })
-            })
-})
-
-app.get("/login", (req, res) => {
-    res.render("login.ejs")
-})
-
-app.post("/login", 
-    passport.authenticate("local", {failureRedirect:"/register"}) 
-    , (req, res) => {
-    res.render("board.ejs")
-})
+// credentials handling
+app.get("/register", credentialRouter);
+app.post("/register", credentialRouter);
+app.get("/login", credentialRouter);
+app.post("/login", credentialRouter);
 
 // http server
 const httpServer = app.listen(PORT, () => {
