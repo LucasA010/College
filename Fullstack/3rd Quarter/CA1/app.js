@@ -29,7 +29,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/mayhemDB")
 .then(conn => console.log(conn.models));
 
 
-const sessionStore = new MongoDBStore ({ // seetin up mongo session 
+const sessionStore = new MongoDBStore ({ // seeting up mongo session 
         uri: "mongodb://127.0.0.1:27017/mayhemDB",
         collection: "sessions"
 }, err => {if(err) console.log(err+" -> something went wrong setting up session DB")})

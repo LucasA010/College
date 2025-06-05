@@ -8,6 +8,12 @@ const monsters = {werewolf: `<img class="monster" src="../images/werewolf.png">`
 
 let username;
 let piecesList = [];
+let previousPiece;
+
+if (div.classList.contains(`piece-selected`)) {
+  moveMonster(previousPiece, div)
+  div.classList.remove(`piece-selected`)
+}
 
 // adding event listners to divs
 divList.forEach((div, index) => {
@@ -21,8 +27,16 @@ divList.forEach((div, index) => {
 
       // Div index
       pieceSelector.dataset.targetIndex = index;
-    } else {
-      moveMonster();
+    } 
+    
+    if (div.classList.contains(`${username}-piece`)){
+      div.classList.add(`piece-selected`)
+      previousPiece = div;
+    }
+
+    if (div.classList.contains(`piece-selected`)) {
+      moveMonster(previousPiece, div)
+      div.classList.remove(`piece-selected`)
     }
   });
 });
@@ -37,6 +51,7 @@ pieceButtons.forEach(button => {
 
     // inserting monster in selected div
     cell.innerHTML = monsters[selectedPiece];
+    cell.classList.add(`${username}-piece`)
 
     // hide monster popup
     pieceSelector.style.display = "none";
@@ -56,7 +71,7 @@ fetch('/api/me')
     username = user.username;
     console.log('Logged in as:', username);
 
-    // Now connect to WebSocket using username
+    // connect to WebSocket using username
     const socket = new WebSocket(`ws://localhost:3000?username=${encodeURIComponent(username)}`); // change from hard code later
     
     // response when server opens connection with user
@@ -66,6 +81,17 @@ fetch('/api/me')
             method: "addPlayer",
             username
         }))
+    }
+
+    function sendMove(data) {
+      socket.send(JSON.stringify({
+        method: "logMove",
+        data
+      }))
+    }
+
+    window.Game = {
+      logMove: (moveData) => {sendMove(moveData)}
     }
 
     // receiving from the server
@@ -82,7 +108,6 @@ fetch('/api/me')
 })
   .catch(err => {
     console.error('Failed to get user:', err);
-    // Optionally redirect to login
 });
 
 // creating Piece class
@@ -104,7 +129,12 @@ function updatePlayerList(players) {
     })
 }
 
-function moveMonster() {
+function moveMonster(originDiv, destinyDiv) {
+  Game.logMove({from: originDiv, 
+                to: destinyDiv})
+  destinyDiv.innerHTML = originDiv.innerHTML;
+  originDiv.innerHTML = "";
+
 
 }
 
