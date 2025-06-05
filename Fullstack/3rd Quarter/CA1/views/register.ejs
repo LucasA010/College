@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="../public/style/credentialStyle.css"></link>
+    <link rel="stylesheet" href="../style/credentialStyle.css"></link>
 </head>
 <body>
-    <form id="form" action="/register" method="post">
+    <form class="forms" action="/register" method="post">
         <h2>Registration</h2>
         <!-- username field -->
         <label for="username">Username: </label>
@@ -18,12 +18,9 @@
         <!-- password field -->
         <label for="password">Password: </label>
         <input type="password" name="password" id="password">
-        <label for="passwordCheck">Repeat Password: </label>
-        <input type="password" name="passwordCheck" id="passwordCheck">
         <!-- submit button -->
         <button type="submit" id="submit">Register</button>
         
     </form>
-    <script src="../public/script/register.js"></script>
 </body>
 </html>

@@ -8,11 +8,11 @@
     </head>
     <body>
         <!-- header -->
-        <section>
+        <section id="player-section">
             <h3>Players:</h3>
             <ul id="players">
             </ul>
-            <button>Start Game</button>
+            <button id="start-button">Start Game</button>
         </section>
 
         <!-- board body -->
@@ -23,11 +23,13 @@
             <% } %>
         </section>
 
-        <!-- stats -->
-        <section>
-
-        </section>
-    
+        <!-- monster selection popup -->
+        <div id="piece-selector">
+            <p>Select your monster:</p>
+            <button data-piece="werewolf">Werewolf</button>
+            <button data-piece="vampire">Vampire</button>
+            <button data-piece="ghost">Ghost</button>
+        </div>
     </body>
     <script src="../script/board.js"></script>
 </html>

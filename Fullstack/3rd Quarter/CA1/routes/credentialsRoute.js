@@ -1,6 +1,7 @@
 import express from "express";
 import {User} from "../schema.js";
 import passport from "../config/passportConfig.js";
+const rules = "rules here";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.post("/register", (req, res) => { // creating account
             passport.authenticate("local", 
                 {failureRedirect: "/login"})  
                 (req, res, () => {
-                res.render("home.ejs");
+                res.render("home.ejs", {rules});
                 })
     })
 })
@@ -36,7 +37,7 @@ router.get("/login", (req, res) => {  //render login page unless already autenti
 router.post("/login", //render board unless not autenticated, the sent to registration
     passport.authenticate("local", {failureRedirect:"/register"}) 
     , (req, res) => {
-    res.render("board.ejs")
+    res.render("home.ejs", {rules})
 })
 
 export default router;

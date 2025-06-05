@@ -2,12 +2,12 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import mongoose from "mongoose";
+import mongoose, { set } from "mongoose";
 import connectMongodbSession from "connect-mongodb-session"
 import session from "express-session";
 import {WebSocketServer, WebSocket} from "ws";
-import {User} from "./schema.js"
 import passport from "./config/passportConfig.js";
+import url from "url";
 
 import credentialRouter from "./routes/credentialsRoute.js"
 
@@ -47,6 +47,16 @@ app.use(session({
 app.use(passport.initialize()) // starts passport
 app.use(passport.session()) //link passport with session
 
+app.get('/api/me', (req, res) => { // method to get username in client side 
+  if (req.isAuthenticated()) {
+    res.json({
+      username: req.user.username,
+    });
+  } else {
+    console.log("User not autenticated");
+  }
+});
+
 
 app.get("/", (req, res) => {
     if (!req.isAuthenticated()) {
@@ -83,9 +93,58 @@ httpServer.on("upgrade", async (request, socket, head) => {
     })
 })
 
-const playerList = [];
+const clients = new Map();
+
+function broadcastPlayers() {
+    const usernames = Array.from(clients.values());
+    const data = JSON.stringify({
+        method: "updatePlayers",
+        players: usernames
+    })
+
+    clients.forEach((_, client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+    
+}
 
 // response when user sends data
-wsServer.on("connection", (ws) => {
-    
+wsServer.on("connection", (ws, req) => {
+    const query = url.parse(req.url, true).query;
+    const username = query.username;
+
+    if (!username) return ws.close();
+    console.log(`${username} connected`)
+
+    clients.set(ws, username);
+
+    broadcastPlayers();
+
+    ws.on("message", (msg) => {
+        let parsedMsg; //initialising parsed variable
+        
+        try { //trying to parse message
+            parsedMsg = JSON.parse(msg);
+        } catch (e) {
+            console.log(e+" -> Parsed msg went wrong")
+        }
+
+        // Switch statement to simulate 'functions'
+        // depending on what method is sent
+        switch(parsedMsg.method) {
+
+        }
+    })
+
+    ws.on("close", (event) => {
+        console.log(`${username} disconnected`)
+        clients.delete(ws)
+        broadcastPlayers();
+    })
+
+    ws.on("error", (err) => {
+        console.log(err+" -> Something went wrong with server connection")
+    })
 })
