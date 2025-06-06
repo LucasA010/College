@@ -1,7 +1,18 @@
 import express from "express";
 import {User} from "../schema.js";
 import passport from "../config/passportConfig.js";
-const rules = "rules here";
+const rules =  `
+- On the first move you can only place a monster on the first row.
+- Your number of moves is  equal to your number of monsters, but you can't move a monster you just placed.
+- Combat goes as follows:
+    - Vampire beates Werewolf
+    - Werewolf beats Ghost
+    - Ghost beats Vampire
+    - If they are equal both are eliminated
+- Moves are logged in order from whoever makes their moves first.
+- Moves are processed when the turn finishes.
+- You have a total of 10 monsters, and you can place one per turn.
+- You lose when you have no more monsters.`;
 
 const router = express.Router();
 

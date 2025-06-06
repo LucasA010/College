@@ -94,6 +94,7 @@ httpServer.on("upgrade", async (request, socket, head) => {
 })
 
 const clients = new Map();
+let moves = [];
 
 function broadcastPlayers() {
     const usernames = Array.from(clients.values());
@@ -109,7 +110,7 @@ function broadcastPlayers() {
   });
     
 }
-
+ 
 // response when user sends data
 wsServer.on("connection", (ws, req) => {
     const query = url.parse(req.url, true).query;
@@ -120,10 +121,11 @@ wsServer.on("connection", (ws, req) => {
 
     clients.set(ws, username);
 
-    broadcastPlayers();
+    broadcastPlayers(); // adding to player list on open
 
     ws.on("message", (msg) => {
-        let parsedMsg; //initialising parsed variable
+        let parsedMsg; //initialising parsed variabl
+        // e
         
         try { //trying to parse message
             parsedMsg = JSON.parse(msg);
@@ -134,16 +136,20 @@ wsServer.on("connection", (ws, req) => {
         // Switch statement to simulate 'functions'
         // depending on what method is sent
         switch(parsedMsg.method) {
-
+            
+            case "logMove":
+                moves.push(parsedMsg)
+                console.log(moves)
+                break;
         }
     })
 
     ws.on("close", (event) => {
         console.log(`${username} disconnected`)
         clients.delete(ws)
-        broadcastPlayers();
+        broadcastPlayers(); // taking player from list when disconnects
     })
-
+ 
     ws.on("error", (err) => {
         console.log(err+" -> Something went wrong with server connection")
     })

@@ -10,11 +10,6 @@ let username;
 let piecesList = [];
 let previousPiece;
 
-if (div.classList.contains(`piece-selected`)) {
-  moveMonster(previousPiece, div)
-  div.classList.remove(`piece-selected`)
-}
-
 // adding event listners to divs
 divList.forEach((div, index) => {
   div.addEventListener("click", (event) => {
@@ -34,9 +29,9 @@ divList.forEach((div, index) => {
       previousPiece = div;
     }
 
-    if (div.classList.contains(`piece-selected`)) {
-      moveMonster(previousPiece, div)
+    if (!div.classList.contains(`piece-selected`) && !isEmpty) {
       div.classList.remove(`piece-selected`)
+      moveMonster(previousPiece, div)
     }
   });
 });
@@ -45,24 +40,24 @@ divList.forEach((div, index) => {
 pieceButtons.forEach(button => {
   button.addEventListener("click", (event) => {
     // relevant variables
-    const selectedPiece = event.target.dataset.piece;
+    const monsterType = event.target.dataset.piece;
     const index = pieceSelector.dataset.targetIndex
     const cell = divList[index]
 
     // inserting monster in selected div
-    cell.innerHTML = monsters[selectedPiece];
+    cell.innerHTML = monsters[monsterType];
     cell.classList.add(`${username}-piece`)
 
     // hide monster popup
     pieceSelector.style.display = "none";
 
     //  creating piece obj to later send to server
-    piecesList.push(new Piece(selectedPiece, username, cell))
+    piecesList.push(new Piece(monsterType, username, cell))
   })
 })
 
 
-fetch('/api/me')
+fetch('/api/me') // way of linking client username and sending it to the server
   .then(res => {
     if (!res.ok) throw new Error('Not logged in');
     return res.json();
@@ -98,7 +93,9 @@ fetch('/api/me')
     socket.onmessage = (event) => {
         parsedEvent = JSON.parse(event.data);
         switch (parsedEvent.method) {
-            case "updatePlayers":
+           
+          // function to receive players list update
+          case "updatePlayers":
                 const players = parsedEvent.players;
                 updatePlayerList(players);
                 break;
@@ -120,8 +117,10 @@ class Piece {
 }
 
 function updatePlayerList(players) {
+    // resetting list 
     playerList.innerHTML = "";
 
+    // redoing list with new players
     players.forEach((player) => {
         const newLi = document.createElement("li");
         newLi.textContent = player;
