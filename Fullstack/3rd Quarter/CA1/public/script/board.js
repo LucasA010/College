@@ -8,10 +8,12 @@ const monsters = {werewolf: `<img class="monster" src="../images/werewolf.png">`
                   vampire: `<img class="monster" src="../images/vampire.png">`, 
                   ghost: `<img class="monster" src="../images/ghost.png">`}
 
+let players;
 let username;
 let piecesList = [];
 let previousPiece;
 let firstPlacement;
+let playerNum;
 
 readyButton.addEventListener("click", (event) => {
   Game.ready();
@@ -65,8 +67,8 @@ fetch('/api/me') // way of linking client username and sending it to the server
            
           // function to receive players list update
           case "updatePlayers":
-            const players = parsedEvent.players;
-            const roomID = parsedEvent.roomID;
+            players = parsedEvent.players;
+            const roomID = parsedEvent.room.roomID;
             console.log("You're in Room -> ", roomID);
             updatePlayerList(players);
             break;
@@ -112,7 +114,12 @@ function moveMonster(originDiv, destinyDiv) {
 }
 
 function startGame() {
-    // adding event listners to divs
+  // assigning player number
+  for (let i=0; i<players.length; i++) {
+    if (players[i] == username) {playerNum = `player-${i+1}`}
+  }
+  
+  // adding event listners to divs
   divList.forEach((div, index) => {
     div.addEventListener("click", (event) => {
       const isEmpty = !div.innerHTML;

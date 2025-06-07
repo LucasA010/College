@@ -16,6 +16,7 @@ import { Room } from "./models/Room.js";
 
 const app = express();
 let nextRoom = 1;
+let readyPlayers;
 
 const MongoDBStore = connectMongodbSession(session);
 
@@ -94,7 +95,7 @@ function broadcastPlayers(room) {
     const data = JSON.stringify({
         method: "updatePlayers",
         players: usernames,
-        roomID: room.roomID
+        room
     })
 
     room.players.forEach((_, ws) => {
@@ -102,7 +103,29 @@ function broadcastPlayers(room) {
       ws.send(data);
     }
   });
+}
+
+function startGame(ws) {
+    const room = rooms.get(ws.roomID);
+    if (!room) return;
+
+    room.playersReady++;
+
+    if (room.playersReady === room.players.size) {
+        console.log(`Romm "${room.roomID}: all players ready, starting game."`)
+
+        const data = JSON.stringify({method: "gameStart"});
+
+        room.players.forEach((_,  playerWs) => {
+            if (playerWs.readyState === WebSocket.OPEN) {
+                playerWs.send(data);
+            }
+        })
+    }
+
     
+
+
 }
  
 // response when user sends data
@@ -124,17 +147,18 @@ wsServer.on("connection", (ws, req) => {
     if (!room) { // creating room
         room = new Room(nextRoom++);
         rooms.set(room.roomID, room);
-        console.log(`${room.roomID} created`)
+        console.log(`Room "${room.roomID}" created`)
     }
 
     room.players.set(ws, username);
+    ws.roomID = room.roomID;
     console.log(`${username} joined room ${room.roomID}`)
 
     broadcastPlayers(room);
 
     ws.on("message", (msg) => {
         let parsedMsg; //initialising parsed variabl
-        // e
+        const room = rooms.get(ws.roomID);
         
         try { //trying to parse message
             parsedMsg = JSON.parse(msg);
@@ -146,9 +170,13 @@ wsServer.on("connection", (ws, req) => {
         // depending on what method is sent
         switch(parsedMsg.method) {
             
-            case "logMove":
-                movesLog.push(parsedMsg)
-                console.log(movesLog)
+            case "logMove":                
+                room.movesLog.push(parsedMsg);
+                console.log(room.movesLog)
+                break;
+            
+            case "playerReady":
+                startGame(ws);
                 break;
         }
     })
