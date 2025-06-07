@@ -66,6 +66,8 @@ fetch('/api/me') // way of linking client username and sending it to the server
           // function to receive players list update
           case "updatePlayers":
             const players = parsedEvent.players;
+            const roomID = parsedEvent.roomID;
+            console.log("You're in Room -> ", roomID);
             updatePlayerList(players);
             break;
 

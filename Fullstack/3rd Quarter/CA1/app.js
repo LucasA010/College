@@ -2,18 +2,20 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import mongoose, { set } from "mongoose";
+import mongoose from "mongoose";
 import connectMongodbSession from "connect-mongodb-session"
 import session from "express-session";
-import {WebSocketServer, WebSocket} from "ws";
+import {WebSocket} from "ws";
 import passport from "./config/passportConfig.js";
 import url from "url";
+import { setupWebSocket } from "./websocket/setup.js";
 
 import credentialRouter from "./routes/credentialsRoute.js"
+import { PORT} from "./config/config.js";
+import { Room } from "./models/Room.js";
 
-const PORT = 3000;
 const app = express();
-
+let nextRoom = 1;
 
 const MongoDBStore = connectMongodbSession(session);
 
@@ -82,39 +84,22 @@ const httpServer = app.listen(PORT, () => {
     console.log(`listening on port: ${PORT}`);    
 })
 
-// ws Server
-const wsServer = new WebSocketServer({noServer:true});
+// ws Server/ initial handshake
+const wsServer = setupWebSocket(httpServer);
 
-class Room {
-    constructor(roomID, boardState, players) {
-        this.roomID = roomID;
-        this.boardState = boardState;
-        this.players = players
-    }
-}
+const rooms = new Map();
 
-// initial handshake with user
-httpServer.on("upgrade", async (request, socket, head) => {
-    wsServer.handleUpgrade(request, socket, head, (ws) => {
-        wsServer.emit("connection", ws, request);
-        console.log("Connection Handshake sucessfull");
-    })
-})
-
-const board = Array(10).fill(null).map(() => Array(10).fill(null)); // creating a 10x10 board with null values
-const clients = new Map();
-let moves = [];
-
-function broadcastPlayers() {
-    const usernames = Array.from(clients.values());
+function broadcastPlayers(room) {
+    const usernames = Array.from(room.players.values());
     const data = JSON.stringify({
         method: "updatePlayers",
-        players: usernames
+        players: usernames,
+        roomID: room.roomID
     })
 
-    clients.forEach((_, client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
+    room.players.forEach((_, ws) => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(data);
     }
   });
     
@@ -124,13 +109,28 @@ function broadcastPlayers() {
 wsServer.on("connection", (ws, req) => {
     const query = url.parse(req.url, true).query;
     const username = query.username;
+    let room = null;
 
     if (!username) return ws.close();
     console.log(`${username} connected`)
 
-    clients.set(ws, username);
+   for (let [id, r] of rooms.entries()) {
+        if (!r.isFull()) {
+            room = r;
+            break;
+        }
+    }
 
-    broadcastPlayers(); // adding to player list on open
+    if (!room) { // creating room
+        room = new Room(nextRoom++);
+        rooms.set(room.roomID, room);
+        console.log(`${room.roomID} created`)
+    }
+
+    room.players.set(ws, username);
+    console.log(`${username} joined room ${room.roomID}`)
+
+    broadcastPlayers(room);
 
     ws.on("message", (msg) => {
         let parsedMsg; //initialising parsed variabl
@@ -147,16 +147,16 @@ wsServer.on("connection", (ws, req) => {
         switch(parsedMsg.method) {
             
             case "logMove":
-                moves.push(parsedMsg)
-                console.log(moves)
+                movesLog.push(parsedMsg)
+                console.log(movesLog)
                 break;
         }
     })
 
     ws.on("close", (event) => {
         console.log(`${username} disconnected`)
-        clients.delete(ws)
-        broadcastPlayers(); // taking player from list when disconnects
+        room.players.delete(ws)
+        broadcastPlayers(room); // taking player from list when disconnects
     })
  
     ws.on("error", (err) => {
