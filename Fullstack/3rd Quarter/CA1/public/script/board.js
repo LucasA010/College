@@ -2,6 +2,8 @@ const divList = Array.from(document.getElementsByTagName("div"));
 const playerList = document.getElementById("players");
 const pieceSelector = document.getElementById("piece-selector");
 const pieceButtons = document.querySelectorAll("#piece-selector button");
+const readyButton = document.getElementById("start-button");
+const msgDisplay = document.getElementById("message-display");
 const monsters = {werewolf: `<img class="monster" src="../images/werewolf.png">`, 
                   vampire: `<img class="monster" src="../images/vampire.png">`, 
                   ghost: `<img class="monster" src="../images/ghost.png">`}
@@ -9,53 +11,11 @@ const monsters = {werewolf: `<img class="monster" src="../images/werewolf.png">`
 let username;
 let piecesList = [];
 let previousPiece;
+let firstPlacement;
 
-// adding event listners to divs
-divList.forEach((div, index) => {
-  div.addEventListener("click", (event) => {
-    const isEmpty = !div.innerHTML;
-    if (isEmpty) {
-      // Monster pop up
-      pieceSelector.style.left = `${event.pageX}px`;
-      pieceSelector.style.top = `${event.pageY}px`;
-      pieceSelector.style.display = "block";
-
-      // Div index
-      pieceSelector.dataset.targetIndex = index;
-    } 
-    
-    if (div.classList.contains(`${username}-piece`)){
-      div.classList.add(`piece-selected`)
-      previousPiece = div;
-    }
-
-    if (!div.classList.contains(`piece-selected`) && !isEmpty) {
-      div.classList.remove(`piece-selected`)
-      moveMonster(previousPiece, div)
-    }
-  });
-});
-
-// addigng event listeners to button to choose monster
-pieceButtons.forEach(button => {
-  button.addEventListener("click", (event) => {
-    // relevant variables
-    const monsterType = event.target.dataset.piece;
-    const index = pieceSelector.dataset.targetIndex
-    const cell = divList[index]
-
-    // inserting monster in selected div
-    cell.innerHTML = monsters[monsterType];
-    cell.classList.add(`${username}-piece`)
-
-    // hide monster popup
-    pieceSelector.style.display = "none";
-
-    //  creating piece obj to later send to server
-    piecesList.push(new Piece(monsterType, username, cell))
-  })
+readyButton.addEventListener("click", (event) => {
+  Game.ready();
 })
-
 
 fetch('/api/me') // way of linking client username and sending it to the server
   .then(res => {
@@ -85,8 +45,17 @@ fetch('/api/me') // way of linking client username and sending it to the server
       }))
     }
 
+    function readySignal() {
+      socket.send(JSON.stringify({
+        method: "playerReady"
+      }))
+      readyButton.style.display = "none";
+      msgDisplay.innerText = "Awaiting other players";
+    }
+
     window.Game = {
-      logMove: (moveData) => {sendMove(moveData)}
+      logMove: (moveData) => {sendMove(moveData)},
+      ready: () => {readySignal()}
     }
 
     // receiving from the server
@@ -96,9 +65,14 @@ fetch('/api/me') // way of linking client username and sending it to the server
            
           // function to receive players list update
           case "updatePlayers":
-                const players = parsedEvent.players;
-                updatePlayerList(players);
-                break;
+            const players = parsedEvent.players;
+            updatePlayerList(players);
+            break;
+
+          case "gameStart":
+            msgDisplay.innerText = "Game started!";
+            startGame();
+            break;
         }
     }
 
@@ -133,8 +107,62 @@ function moveMonster(originDiv, destinyDiv) {
                 to: destinyDiv})
   destinyDiv.innerHTML = originDiv.innerHTML;
   originDiv.innerHTML = "";
+}
 
+function startGame() {
+    // adding event listners to divs
+  divList.forEach((div, index) => {
+    div.addEventListener("click", (event) => {
+      const isEmpty = !div.innerHTML;
+      if (isEmpty && firstPlacement) {
+        // Monster pop up
+        pieceSelector.style.left = `${event.pageX}px`;
+        pieceSelector.style.top = `${event.pageY}px`;
+        pieceSelector.style.display = "block";
 
+        // Div index
+        pieceSelector.dataset.targetIndex = index;
+      } 
+      
+      if (div.classList.contains(`${username}-piece`)){
+        div.classList.add(`piece-selected`)
+        previousPiece = div;
+      }
+
+      if (!div.classList.contains(`piece-selected`) && !isEmpty) {
+        div.classList.remove(`piece-selected`)
+        moveMonster(previousPiece, div)
+      }
+  });
+});
+
+  // addigng event listeners to button to choose monster
+  pieceButtons.forEach(button => {
+    button.addEventListener("click", (event) => {
+      // relevant variables
+      const monsterType = event.target.dataset.piece;
+      const index = pieceSelector.dataset.targetIndex
+      const cell = divList[index]
+
+      // inserting monster in selected div
+      cell.innerHTML = monsters[monsterType];
+      cell.classList.add(`${username}-piece`)
+
+      // hide monster popup
+      pieceSelector.style.display = "none";
+
+      //  creating piece obj to later send to server
+      piecesList.push(new Piece(monsterType, username, cell))
+    })
+  })
+  firstPlacement = true;
+  nextTurn();
+}
+
+function nextTurn() {
+  if (firstPlacement) {
+    //highlight first row
+  }
 }
 
 

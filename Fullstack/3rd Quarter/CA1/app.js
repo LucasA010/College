@@ -85,6 +85,14 @@ const httpServer = app.listen(PORT, () => {
 // ws Server
 const wsServer = new WebSocketServer({noServer:true});
 
+class Room {
+    constructor(roomID, boardState, players) {
+        this.roomID = roomID;
+        this.boardState = boardState;
+        this.players = players
+    }
+}
+
 // initial handshake with user
 httpServer.on("upgrade", async (request, socket, head) => {
     wsServer.handleUpgrade(request, socket, head, (ws) => {
@@ -93,6 +101,7 @@ httpServer.on("upgrade", async (request, socket, head) => {
     })
 })
 
+const board = Array(10).fill(null).map(() => Array(10).fill(null)); // creating a 10x10 board with null values
 const clients = new Map();
 let moves = [];
 
