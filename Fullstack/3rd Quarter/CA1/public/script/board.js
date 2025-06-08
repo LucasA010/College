@@ -116,7 +116,7 @@ function moveMonster(originDiv, destinyDiv) {
 function startGame() {
   // assigning player number
   for (let i=0; i<players.length; i++) {
-    if (players[i] == username) {playerNum = `player-${i+1}`}
+    if (players[i] == username) {playerNum = i+1}
   }
   
   // adding event listners to divs
@@ -168,9 +168,42 @@ function startGame() {
   nextTurn();
 }
 
+function highlightCells() {
+  if (firstPlacement) {
+    switch(playerNum) {
+      
+      case 1:
+        for (let i=0; i<100; i+10) {
+            //highlight using either divlist or board cells, choose one
+        }
+        break;
+
+      case 2:
+        for (let i=0; i<10; i++) {
+          //highlight using either divlist or board cells, choose one
+        }
+        break;
+      
+      case 3:
+        for (let i=9; i<100; i+10) {
+          //highlight using either divlist or board cells, choose one
+        }
+        break;
+
+      case 4:
+        for (let i=90; i<100; i++) {
+          //highlight using either divlist or board cells, choose one
+        }
+        break;
+
+    }
+  }
+}
+
 function nextTurn() {
   if (firstPlacement) {
     //highlight first row
+    
   }
 }
 
