@@ -16,7 +16,6 @@ import { Room } from "./models/Room.js";
 
 const app = express();
 let nextRoom = 1;
-let readyPlayers;
 
 const MongoDBStore = connectMongodbSession(session);
 
@@ -87,8 +86,8 @@ const httpServer = app.listen(PORT, () => {
 
 // ws Server/ initial handshake
 const wsServer = setupWebSocket(httpServer);
-
 const rooms = new Map();
+
 
 function broadcastPlayers(room) {
     const usernames = Array.from(room.players.values());
@@ -105,6 +104,14 @@ function broadcastPlayers(room) {
   });
 }
 
+function broadcast(room, data) {
+    room.players.forEach((_, ws) => {
+        if (ws.readyState === WebSocket.OPEN) {
+        ws.send(data);
+    }
+    })    
+}
+
 function startGame(ws) {
     const room = rooms.get(ws.roomID);
     if (!room) return;
@@ -112,9 +119,12 @@ function startGame(ws) {
     room.playersReady++;
 
     if (room.playersReady === room.players.size) {
-        console.log(`Romm "${room.roomID}: all players ready, starting game."`)
+        console.log(`Room "${room.roomID}: all players ready, starting game."`)
 
-        const data = JSON.stringify({method: "gameStart"});
+        const data = JSON.stringify({
+            method: "gameStart",
+            board: room.boardState,
+        });
 
         room.players.forEach((_,  playerWs) => {
             if (playerWs.readyState === WebSocket.OPEN) {
@@ -122,10 +132,6 @@ function startGame(ws) {
             }
         })
     }
-
-    
-
-
 }
  
 // response when user sends data
@@ -150,15 +156,20 @@ wsServer.on("connection", (ws, req) => {
         console.log(`Room "${room.roomID}" created`)
     }
 
-    room.players.set(ws, username);
+    room.players.set(ws, {
+        username,
+        monstersNum: 10,
+        monstersOnBoard: 0
+    });
     ws.roomID = room.roomID;
     console.log(`${username} joined room ${room.roomID}`)
 
     broadcastPlayers(room);
 
     ws.on("message", (msg) => {
-        let parsedMsg; //initialising parsed variabl
+        let parsedMsg; //initialising parsed variable
         const room = rooms.get(ws.roomID);
+        const player = room.players.get(ws);
         
         try { //trying to parse message
             parsedMsg = JSON.parse(msg);
@@ -170,14 +181,19 @@ wsServer.on("connection", (ws, req) => {
         // depending on what method is sent
         switch(parsedMsg.method) {
             
-            case "logMove":                
-                room.movesLog.push(parsedMsg);
+            case "logMove":
+                room.movesLog.push({
+                    fromIndex: parsedMsg.data.from,
+                    toIndex: parsedMsg.data.to
+                });
                 console.log(room.movesLog)
                 break;
             
             case "playerReady":
                 startGame(ws);
                 break;
+
+            
         }
     })
 

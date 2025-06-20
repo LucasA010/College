@@ -13,7 +13,7 @@
 
   
   #board {
-    display: grid;
+    display: none;
     height: 524px;
     width: 524px;
     padding: 3px;
@@ -44,7 +44,7 @@
     margin-bottom: 20px;
   }
 
-  .piece-selected {
+  .piece-selected, .highlight  {
     background-color: lightblue;
   }
 
@@ -66,7 +66,11 @@
     border-radius: 10px;
   }
 
-  #start-button {
+  #end-turn-button {
+    display: none;
+  }
+
+  #start-button, #end-turn-button {
     background-color: var(--bg-colour);
     color: var(--primary-colour);
     border: 0;

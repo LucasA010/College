@@ -7,6 +7,7 @@ export class Room {
         this.players = new Map(); // map os players linked with their ws
         this.movesLog = []; // process moves
         this.playersReady = 0;
+        this.playersEndedTurn = 0;
     }
 
     isFull() {

@@ -1,19 +1,19 @@
-const divList = Array.from(document.getElementsByTagName("div"));
+const boardDiv = document.getElementById("board");
 const playerList = document.getElementById("players");
 const pieceSelector = document.getElementById("piece-selector");
 const pieceButtons = document.querySelectorAll("#piece-selector button");
 const readyButton = document.getElementById("start-button");
+const endTurnButton = document.getElementById("end-turn-button");
 const msgDisplay = document.getElementById("message-display");
-const monsters = {werewolf: `<img class="monster" src="../images/werewolf.png">`, 
-                  vampire: `<img class="monster" src="../images/vampire.png">`, 
-                  ghost: `<img class="monster" src="../images/ghost.png">`}
+
 
 let players;
 let username;
-let piecesList = [];
 let previousPiece;
 let firstPlacement;
 let playerNum;
+let board;
+let divList = [];
 
 readyButton.addEventListener("click", (event) => {
   Game.ready();
@@ -55,9 +55,17 @@ fetch('/api/me') // way of linking client username and sending it to the server
       msgDisplay.innerText = "Awaiting other players";
     }
 
+    function endTurn(data) {
+      socket.send(JSON.stringify({
+        method: "endTurn",
+        username
+      }));
+    }
+
     window.Game = {
       logMove: (moveData) => {sendMove(moveData)},
-      ready: () => {readySignal()}
+      ready: () => {readySignal()},
+      endTurn: () => {endTurn()}
     }
 
     // receiving from the server
@@ -75,8 +83,10 @@ fetch('/api/me') // way of linking client username and sending it to the server
 
           case "gameStart":
             msgDisplay.innerText = "Game started!";
+            board = parsedEvent.board;
             startGame();
             break;
+
         }
     }
 
@@ -85,15 +95,6 @@ fetch('/api/me') // way of linking client username and sending it to the server
     console.error('Failed to get user:', err);
 });
 
-// creating Piece class
-class Piece {
-  constructor(type, userOwner, currPosition) {
-    this.type = type;
-    this.userOwner = userOwner;
-    this.currPosition = currPosition;
-  }
-}
-
 function updatePlayerList(players) {
     // resetting list 
     playerList.innerHTML = "";
@@ -101,48 +102,93 @@ function updatePlayerList(players) {
     // redoing list with new players
     players.forEach((player) => {
         const newLi = document.createElement("li");
-        newLi.textContent = player;
+        newLi.textContent = player.username;
         playerList.appendChild(newLi);
     })
 }
 
 function moveMonster(originDiv, destinyDiv) {
-  Game.logMove({from: originDiv, 
-                to: destinyDiv})
+  const fromIndex = divList.indexOf(originDiv);
+  const toIndex = divList.indexOf(destinyDiv);
+
+  Game.logMove({
+    from: { datasetIndex: fromIndex },
+    to: { datasetIndex: toIndex }
+  });
+
   destinyDiv.innerHTML = originDiv.innerHTML;
   originDiv.innerHTML = "";
 }
 
+function renderBoard(board) {
+  boardDiv.innerHTML = "";
+  boardDiv.style.display = "grid";
+  divList = [];
+
+  for(let row=0; row<board.length; row++) {
+    for(let col=0; col<board[row].length; col++) {
+      const tileData = board[row][col];
+      const tileElement = document.createElement("div");
+      tileElement.classList.add("tile");
+      divList.push(tileElement)
+
+
+      if (tileData) {
+        tileElement.innerHTML = tileData.monster
+      }
+      boardDiv.appendChild(tileElement)
+    }
+  }
+}
+
 function startGame() {
+  firstPlacement = true;
+  renderBoard(board);
+
   // assigning player number
+  
   for (let i=0; i<players.length; i++) {
-    if (players[i] == username) {playerNum = i+1}
+    console.log(players+"this is the players")
+    console.log(players.length+"this is the players length")
+    if (players[i].username == username) {playerNum = i+1}
   }
   
+  highlightCells();
+
+  endTurnButton.addEventListener("click", () => {
+  Game.endTurn();
+
+  endTurnButton.style.display = "none";
+  msgDisplay.innerText = "Waiting for other players...";
+  });
+
   // adding event listners to divs
   divList.forEach((div, index) => {
     div.addEventListener("click", (event) => {
       const isEmpty = !div.innerHTML;
-      if (isEmpty && firstPlacement) {
-        // Monster pop up
+      const isValid = div.classList.contains("highlight");
+      const imgMonster = div.querySelector("img");
+      const owner = imgMonster?.dataset.owner;
+
+      // first placement
+      if (isEmpty && firstPlacement && isValid) {
         pieceSelector.style.left = `${event.pageX}px`;
         pieceSelector.style.top = `${event.pageY}px`;
         pieceSelector.style.display = "block";
-
-        // Div index
         pieceSelector.dataset.targetIndex = index;
       } 
-      
-      if (div.classList.contains(`${username}-piece`)){
+      else if (owner === username){
+        highlightCells(index);
         div.classList.add(`piece-selected`)
         previousPiece = div;
-      }
-
-      if (!div.classList.contains(`piece-selected`) && !isEmpty) {
-        div.classList.remove(`piece-selected`)
+      } 
+      else if (isEmpty && div.classList.contains("highlight")) {
+        previousPiece.classList.remove(`piece-selected`)
         moveMonster(previousPiece, div)
+        clearHighlights()
       }
   });
+  
 });
 
   // addigng event listeners to button to choose monster
@@ -150,53 +196,79 @@ function startGame() {
     button.addEventListener("click", (event) => {
       // relevant variables
       const monsterType = event.target.dataset.piece;
-      const index = pieceSelector.dataset.targetIndex
-      const cell = divList[index]
+      const index = pieceSelector.dataset.targetIndex;
+      const cell = divList[index];
+      const row = Math.floor(index / 10);
+      const col = index % 10;
 
       // inserting monster in selected div
-      cell.innerHTML = monsters[monsterType];
-      cell.classList.add(`${username}-piece`)
+      cell.innerHTML = `<img class="monster "src="../images/${monsterType}.png" data-owner="${username}">`;
+      if (firstPlacement) highlightCells();
+      cell.classList.remove("highlight");
+
+      board[row][col] = {
+        username,
+        monster: monsterType
+      };
 
       // hide monster popup
       pieceSelector.style.display = "none";
+      firstPlacement = false;
+      endTurnButton.style.display = "inline-block";
 
-      //  creating piece obj to later send to server
-      piecesList.push(new Piece(monsterType, username, cell))
+      clearHighlights();
+
+      // send placement info to server - TO DO
     })
   })
-  firstPlacement = true;
-  nextTurn();
 }
 
-function highlightCells() {
-  if (firstPlacement) {
-    switch(playerNum) {
-      
-      case 1:
-        for (let i=0; i<100; i+10) {
-            //highlight using either divlist or board cells, choose one
-        }
-        break;
+function clearHighlights() {
+  divList.forEach(div => {
+    div.classList.remove("highlight");
+  });
+}
 
-      case 2:
-        for (let i=0; i<10; i++) {
-          //highlight using either divlist or board cells, choose one
-        }
-        break;
-      
-      case 3:
-        for (let i=9; i<100; i+10) {
-          //highlight using either divlist or board cells, choose one
-        }
-        break;
+function highlightCells(index) {
+  if (!firstPlacement) {
+    const row = Math.floor(index/10)
+    const col = index % 10;
 
-      case 4:
-        for (let i=90; i<100; i++) {
-          //highlight using either divlist or board cells, choose one
-        }
-        break;
-
+    for (let r=0; r<10; r++) {// highlight row
+      divList[r * 10 + col].classList.add("highlight");
     }
+
+    for (let c=0; c<10; c++) {// highlight column
+      divList[row * 10 + c].classList.add("highlight");
+    }
+
+    for (let i = 1; i <= 2; i++) { //highlight diagonals
+    const diagonalOffsets = [
+      [row - i, col - i], 
+      [row - i, col + i], 
+      [row + i, col - i], 
+      [row + i, col + i], 
+    ];
+
+    diagonalOffsets.forEach(([r, c]) => {
+      if (r >= 0 && r < 10 && c >= 0 && c < 10) {
+        divList[r * 10 + c].classList.add("highlight");
+      }
+    });
+  }
+  };
+
+  if(firstPlacement) {
+    let indices = [];
+
+    switch (playerNum) {
+      case 1: indices = Array.from({ length: 10 }, (_, i) => i * 10); break;// Left
+      case 2: indices = Array.from({ length: 10 }, (_, i) => i); break;// Top
+      case 3: indices = Array.from({ length: 10 }, (_, i) => i * 10 + 9); break;// Right
+      case 4: indices = Array.from({ length: 10 }, (_, i) => 90 + i); break;// Bottom
+    }
+
+  indices.forEach(i => divList[i].classList.add("highlight"));
   }
 }
 
