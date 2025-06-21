@@ -1,14 +1,14 @@
 import React from "react";
 import {View, TextInput, TouchableOpacity, Image} from "react-native";
 import {styles} from "@/public/styles/style"
-import { Props } from "@/interfaces/interfaces";
+import { SearchProps } from "@/interfaces/interfaces";
 
-export const SearchBar: React.FC<Props> = ({
+export const SearchBar: React.FC<SearchProps> = ({
     location,
     placeholder,
     onChangeText,
     onUseMyLocation
-}) => (
+}) => 
     <View style={{flexDirection: "row", alignItems:"center", marginBottom: 10}}>          
         <TextInput
             style={[styles.input, {flex:1, marginRight: 8}]}
@@ -23,4 +23,4 @@ export const SearchBar: React.FC<Props> = ({
             style={{width: 24, height: 24}}/>
         </TouchableOpacity>
     </View>
-)
+

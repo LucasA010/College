@@ -1,5 +1,8 @@
 import * as Location from "expo-location";
 import { Coordinates } from "@/interfaces/interfaces";
+import { Platform } from "react-native";
+import axios from "axios";
+
 
 export const getCurrCoords = async (): Promise<Coordinates | null> => {
     try {
@@ -11,8 +14,8 @@ export const getCurrCoords = async (): Promise<Coordinates | null> => {
         }
 
         const location = await Location.getCurrentPositionAsync({});
+        
         const {latitude, longitude} = location.coords;
-
         return {latitude, longitude};
 
     } catch (error) {
@@ -21,18 +24,31 @@ export const getCurrCoords = async (): Promise<Coordinates | null> => {
     }
 }
 
-// export const getLocationName = async (coords: Coordinates): Promise<string | null> => {
-//     try {
-//         const placesList = await Location.reverseGeocodeAsync(coords);
+export const getLocationName = async (coords: Coordinates): Promise<string> => {
+    try {
+        let response, country, city, location;
 
-//         if (placesList.length > 0) {
-//             const location = placesList[0];
+        if (Platform.OS !== "web") {
+            response = await Location.reverseGeocodeAsync(coords);
+            if (response.length > 0) {location = response[0]}
+            country = location?.country
+            city = location?.city
+        } else {
+            response = await axios.get(`https://nominatim.openstreetmap.org/reverse`,{
+                params: {
+                    lat: coords.latitude,
+                    lon: coords.longitude,
+                    format:"json"
+                }
+            })
+            country = response.data.address.country;
+            city = response.data.address.city;
+        }
+        
+        return `${city}, ${country}`
 
-//             return `${location.name || ""}, ${location.country || ""}`
-//         }
-//         return null;
-//     } catch (error) {
-//         console.error("Gnidocoeg failed");
-//         return null;
-//     }
-// }
+    } catch (error) {
+        console.error("Gnidocoeg failed");
+        return "Your location";
+    }
+}

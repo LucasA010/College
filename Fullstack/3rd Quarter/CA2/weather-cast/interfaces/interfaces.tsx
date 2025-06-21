@@ -1,9 +1,10 @@
 export interface Suggestion {
-  id?: number;
-  name: string;
-  country: string;
-  latitude: number;
-  longitude: number;
+  id?: number,
+  name: string,
+  country: string,
+  latitude: number,
+  longitude: number,
+  admin1: string
 }
 
 export interface Coordinates {
@@ -53,10 +54,27 @@ export interface WeatherData {
     
 }
 
-export interface Props {
+export interface SearchProps {
     location: string,
     placeholder: string,
     onChangeText: (text: string) => void,
     onUseMyLocation: () => void
 }
 
+export interface DynamicProps {
+    suggestions: Suggestion[]
+    onSuggestion: (item: Suggestion) => void
+}
+
+export interface ErrorProps {
+    error: string,
+    onRetry: () => void
+}
+
+export interface SearchButtonProps {
+    onSearch: () => void
+}
+
+export interface WeatherProps {
+    weather: WeatherData
+}
