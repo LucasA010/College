@@ -15,6 +15,7 @@ export const weatherHandlers = () => {
         const [weather, setWeather] = useState<WeatherData | null>(null);
         const [loading, setLoading] =useState<boolean>(false);
         const [error, setError] = useState<string>("")
+        const [unit, setUnit] = useState<"C" | "F">("C");
 
         const fetchSuggestions = useCallback(
         debounce(async (text: string)=> {
@@ -75,7 +76,6 @@ export const weatherHandlers = () => {
 
         try {
             const coords = await getCurrCoords();
-            console.log(coords)
 
             if (!coords) {
             setError("Error while getting user location");
@@ -101,24 +101,25 @@ export const weatherHandlers = () => {
             setSuggestions([]);
         }
         }
+        
+        const handleUnitChange = () => {
+            if (unit === "F") setUnit("C")
+            else setUnit("F")
+        }
 
     return {
-        location,
-        setLocation,
-        placeholder,
-        setPlaceholder,
-        suggestions,
-        setSuggestions,
-        weather,
-        setWeather,
-        loading,
-        setLoading,
-        error,
-        setError,
+        location, setLocation,
+        placeholder, setPlaceholder,
+        suggestions, setSuggestions,
+        weather, setWeather,
+        loading, setLoading,
+        error, setError,
+        unit, setUnit,
         handleInputChange,
         handleSearch,
         handleUserLocation,
         handleSuggestionSelect,
-        handleDismiss
+        handleDismiss,
+        handleUnitChange
     }
 }

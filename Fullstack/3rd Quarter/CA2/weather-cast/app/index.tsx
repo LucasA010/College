@@ -1,14 +1,16 @@
 import React from "react";
-import {Text, Button, View, ActivityIndicator, 
-        FlatList, TouchableOpacity, Pressable,} from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  Text, View
+} from "react-native";
 
-import {Suggestion} from "@/interfaces/interfaces";
-import { styles } from "@/public/styles/style";
-import { SearchBar } from "@/components/search-bar";
-import { weatherHandlers } from "@/hooks/handlers";
-import { DynamicSearch } from "@/components/dynamic-search";
 import { ErrorButton, SearchButton } from "@/components/buttons";
+import { DynamicSearch } from "@/components/dynamic-search";
+import { SearchBar } from "@/components/search-bar";
 import { WeatherContainer } from "@/components/weather-container";
+import { weatherHandlers } from "@/hooks/handlers";
+import { styles } from "@/public/styles/style";
 
 export default function App() {
   const {
@@ -18,11 +20,13 @@ export default function App() {
     weather,
     loading,
     error,
+    unit,
     handleInputChange,
     handleSearch,
     handleSuggestionSelect,
     handleUserLocation,
-    handleDismiss
+    handleDismiss,
+    handleUnitChange
   } = weatherHandlers();
 
     return(
@@ -59,6 +63,8 @@ export default function App() {
           {weather && (
             <WeatherContainer
               weather={weather}
+              unit={unit}
+              onTempChange={handleUnitChange}
             />
           )}
         </View>
