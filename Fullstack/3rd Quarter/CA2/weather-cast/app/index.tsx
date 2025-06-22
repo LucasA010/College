@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  Text, View
-} from "react-native";
+import { ActivityIndicator, Pressable, Text, View} from "react-native";
 
 import { ErrorButton, SearchButton } from "@/components/buttons";
 import { DynamicSearch } from "@/components/dynamic-search";

@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
   },
-  resultBox: {
+  mainWeatherContainer: {
     marginTop: 20,
     alignItems: 'center',
   },
@@ -46,5 +46,18 @@ export const styles = StyleSheet.create({
   attributeMsg: {
     fontSize: 10,
     marginVertical: 4
+  },
+  currentWeatherContainer: {
+    alignItems: `center`
+  },
+  iconImg: {
+    height: 40,
+    width: 40,
+    marginLeft: 30,
+    resizeMode: `contain`
+  },
+  currentWeatherCard: {
+    flexDirection: `row`,
+    alignItems: `center`
   }
 });
