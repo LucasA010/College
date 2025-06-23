@@ -6,37 +6,38 @@ export type WeatherCodes =
 
 export const getIcon = (weatherCode: number, isDay: boolean): ImageSourcePropType => {
 
-  const icons: Record<WeatherCodes, ImageSourcePropType> = {
-    0: isDay ? require(`@/assets/icons/sunny.png`) : require(`@/assets/icons/moony.png`),                                   // Clear sky
-    1: isDay ? require(`@/assets/icons/mainly-clear-sun.png`) : require(`@/assets/icons/mainly-clear-moon.png`),            // Mainly clear
-    2: isDay ? require(`@/assets/icons/cloudy-with-sun.png`) : require(`@/assets/icons/cloudy-with-moon.png`),              // Partly cloudy
-    3: require(`@/assets/icons/cloudy.png`),                                                                                // Overcast
-    45: require(`@/assets/icons/cloudy.png`),                                                                               // Fog
-    48: require(`@/assets/icons/cloudy.png`),                                                                               // Depositing rime fog
-    51: isDay ? require(`@/assets/icons/cloudy-with-rain-and-sun.png`) : require(`@/assets/icons/cloudy-with-rain-and-moon.png`),// Drizzle: Light intensity
-    53: isDay ? require(`@/assets/icons/cloudy-with-rain-and-sun.png`) : require(`@/assets/icons/cloudy-with-rain-and-moon.png`),// Drizzle: Moderate intensity
-    55: isDay ? require(`@/assets/icons/cloudy-with-rain-and-sun.png`) : require(`@/assets/icons/cloudy-with-rain-and-moon.png`),// Drizzle: Dense intensity
-    56: require(`@/assets/icons/rainy.png`),                                                                                // Freezing drizzle: Light intensity
-    57: require(`@/assets/icons/rainy.png`),                                                                                // Freezing drizzle: Dense intensity
-    61: require(`@/assets/icons/rainy.png`),                                                                                // Rain: Slight intensity
-    63: require(`@/assets/icons/moderate-rain.png`),                                                                        // Rain: Moderate intensity
-    65: require(`@/assets/icons/heavy-rain.png`),                                                                           // Rain: Heavy intensity
-    66: require(`@/assets/icons/rainy.png`),                                                                                // Freezing rain: Light intensity
-    67: require(`@/assets/icons/heavy-rain.png`),                                                                           // Freezing rain: Heavy intensity
-    71: require(`@/assets/icons/snowy.png`),                                                                                // Snow fall: Slight intensity
-    73: require(`@/assets/icons/snowy.png`),                                                                                // Snow fall: Moderate intensity
-    75: require(`@/assets/icons/heavy-snow.png`),                                                                           // Snow fall: Heavy intensity
-    77: require(`@/assets/icons/snowy.png`),                                                                                // Snow grains
-    80: require(`@/assets/icons/rainy.png`),                                                                                // Rain showers: Slight
-    81: require(`@/assets/icons/moderate-rain.png`),                                                                        // Rain showers: Moderate
-    82: require(`@/assets/icons/heavy-rain.png`),                                                                           // Rain showers: Violent
-    85: require(`@/assets/icons/snowy.png`),                                                                                // Snow showers: Slight
-    86: require(`@/assets/icons/snowy.png`),                                                                                // Snow showers: Heavy
-    95: isDay ? require(`@/assets/icons/storm-with-sun.png`) : require(`@/assets/icons/storm-with-moon.png`),               // Thunderstorm: Slight or moderate
-    96: require(`@/assets/icons/storm-with-hail.png`),                                                                      // Thunderstorm with slight hail
-    99: require(`@/assets/icons/storm-with-hail.png`)                                                                       // Thunderstorm with heavy hail
+  const icons: Record<WeatherCodes, string> = {
+    0: isDay ? `sunny` : `moony`,                                           // Clear sky
+    1: isDay ? `mainly-clear-sun`: `mainly-clear-moon`,                     // Mainly clear
+    2: isDay ? `cloudy-with-sun` : `cloudy-with-moon`,                      // Partly cloudy
+    3: `cloudy`,                                                            // Overcast
+    45: `cloudy`,                                                           // Fog
+    48: `cloudy`,                                                           // Depositing rime fog
+    51: isDay ? `cloudy-with-rain-and-sun` : `cloudy-with-rain-and-moon`,   // Drizzle: Light intensity
+    53: isDay ? `cloudy-with-rain-and-sun` : `cloudy-with-rain-and-moon`,   // Drizzle: Moderate intensity
+    55: isDay ? `cloudy-with-rain-and-sun` : `cloudy-with-rain-and-moon`,   // Drizzle: Dense intensity
+    56: `rainy`,                                                            // Freezing drizzle: Light intensity
+    57: `rainy`,                                                            // Freezing drizzle: Dense intensity
+    61: `rainy`,                                                            // Rain: Slight intensity
+    63: `moderate-rain`,                                                    // Rain: Moderate intensity
+    65: `heavy-rain`,                                                       // Rain: Heavy intensity
+    66: `rainy`,                                                            // Freezing rain: Light intensity
+    67: `heavy-rain`,                                                       // Freezing rain: Heavy intensity
+    71: `snowy`,                                                            // Snow fall: Slight intensity
+    73: `snowy`,                                                            // Snow fall: Moderate intensity
+    75: `heavy-snow`,                                                       // Snow fall: Heavy intensity
+    77: `snowy`,                                                            // Snow grains
+    80: `rainy`,                                                            // Rain showers: Slight
+    81: `moderate-rain`,                                                    // Rain showers: Moderate
+    82: `heavy-rain`,                                                       // Rain showers: Violent
+    85: `snowy`,                                                            // Snow showers: Slight
+    86: `snowy`,                                                            // Snow showers: Heavy
+    95: isDay ? `storm-with-sun` : `storm-with-moon`,                       // Thunderstorm: Slight or moderate
+    96: `storm-with-hail`,                                                  // Thunderstorm with slight hail
+    99: `storm-with-hail`                                                   // Thunderstorm with heavy hail
   };
 
-  const defaultIcon = require(`@/assets/icons/hurricane.png`);
-  return icons[weatherCode as WeatherCodes] ?? defaultIcon;
+  const defaultIcon = `hurricane`;
+
+  return require(`@/assets/icons/${icons[weatherCode as WeatherCodes] ?? defaultIcon}.png`)
 };
