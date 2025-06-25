@@ -8,7 +8,7 @@ import { getCoordinates, getCurrWeather, getSuggestions } from "@/public/api/wea
 import { getCurrCoords, getLocationName } from "@/util/location";
 
 
-export const weatherHandlers = () => {
+export const useWeatherHandlers = () => {
         const [location, setLocation] = useState<string>(""); 
         const [placeholder, setPlaceholder] = useState<string>("Enter your location")
         const [suggestions, setSuggestions] = useState<Suggestion[] | []>([]);
@@ -16,6 +16,7 @@ export const weatherHandlers = () => {
         const [loading, setLoading] =useState<boolean>(false);
         const [error, setError] = useState<string>("")
         const [unit, setUnit] = useState<"C" | "F">("C");
+        const [currDate, setCurrDate] = useState<Date>(new Date())
 
         const fetchSuggestions = useCallback(
         debounce(async (text: string)=> {
@@ -115,6 +116,7 @@ export const weatherHandlers = () => {
         loading, setLoading,
         error, setError,
         unit, setUnit,
+        currDate, setCurrDate,
         handleInputChange,
         handleSearch,
         handleUserLocation,

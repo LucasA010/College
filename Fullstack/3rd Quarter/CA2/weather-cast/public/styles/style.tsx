@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+const SCREEN_WIDTH = Dimensions.get("window").width
 
 export const styles = StyleSheet.create({
   container: {
@@ -59,5 +60,19 @@ export const styles = StyleSheet.create({
   currentWeatherCard: {
     flexDirection: `row`,
     alignItems: `center`
+  },
+  slide: {
+    width: SCREEN_WIDTH,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  slideText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff'
+  },
+  scrollContainer: {
+    flexDirection: "row",
   }
 });

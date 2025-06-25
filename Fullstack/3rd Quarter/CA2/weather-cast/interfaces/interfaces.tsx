@@ -76,6 +76,7 @@ export interface SearchButtonProps {
 }
 
 export interface WeatherProps {
+    date: Date,
     weather: WeatherData,
     unit: "C" | "F",
     onTempChange: () => void
