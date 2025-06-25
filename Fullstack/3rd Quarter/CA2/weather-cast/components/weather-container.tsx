@@ -2,13 +2,31 @@ import { WeatherProps } from "@/interfaces/interfaces"
 import { styles } from "@/public/styles/style"
 import { assignTemperature } from "@/util/temp-converter"
 import { getIcon } from "@/util/weather-icons"
-import { FlatList, Image, Platform, Switch, Text, View } from "react-native"
+import { Image, Platform, ScrollView, Switch, Text, View } from "react-native"
 
-const dayData: any = [
-    {id: `1`, title: `blabla1`},
-    {id: `2`, title: `blabla2`},
-    {id: `3`, title: `blabla3`}
-]
+const data = [
+  { id: "1", title: "Sunny" },
+  { id: "2", title: "Cloudy" },
+  { id: "3", title: "Rainy" },
+  { id: "4", title: "Rainy" },
+  { id: "5", title: "Rainy" },
+  { id: "6", title: "Rainy" },
+  { id: "7", title: "Rainy" },
+  { id: "8", title: "Rainy" },
+  { id: "9", title: "Rainy" },
+  { id: "10", title: "Rainy" },
+  { id: "11", title: "Rainy" },
+  { id: "12", title: "Rainy" },
+  { id: "13", title: "Rainy" },
+  { id: "14", title: "Rainy" },
+  { id: "15", title: "Rainy" },
+  { id: "16", title: "Rainy" },
+  { id: "17", title: "Rainy" },
+  { id: "18", title: "Rainy" },
+  { id: "19", title: "Rainy" },
+  { id: "20", title: "Rainy" }
+
+];
 
 export const WeatherContainer: React.FC<WeatherProps> = ({
     date,
@@ -73,23 +91,28 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
 
         <View className="dayWeather">
             <Text>Daily Weather</Text>
-            <FlatList
-                data={dayData}
+            <ScrollView
                 horizontal
-                scrollEnabled
                 pagingEnabled
-                showsHorizontalScrollIndicator
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.slide}>
-                    <Text style={styles.slideText}>{item.title}</Text>
-                    </View>
-                )}
+                showsHorizontalScrollIndicator={true}
+                scrollEnabled={true}
+                style={[
+                    Platform.OS === 'web' && {
+                        overflowX: 'auto',
+                        display: 'flex',
+                        flexDirection: 'row',
+                    },
+                ]}
                 contentContainerStyle={[
                     styles.scrollContainer,
-                    Platform.OS === "web" && { overflowX: "scroll" },
                 ]}
-            />
+                >
+                {data.map((item: any) => (
+                    <View key={item.id} style={styles.slide}>
+                        <Text style={styles.slideText}>{item.title}</Text>
+                    </View>
+                ))}
+            </ScrollView>
 
         </View>
 
