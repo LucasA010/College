@@ -1,3 +1,7 @@
+/** Interfaces for ease of data structuring */
+
+import { ImageSourcePropType } from "react-native"
+
 export interface Suggestion {
   id?: number,
   name: string,
@@ -55,6 +59,7 @@ export interface WeatherData {
 }
 
 export interface SearchProps {
+    onFocus: () => void,
     location: string,
     placeholder: string,
     onChangeText: (text: string) => void,
@@ -80,4 +85,17 @@ export interface WeatherProps {
     weather: WeatherData,
     unit: "C" | "F",
     onTempChange: () => void
+}
+
+export interface HistoryProps {
+    history: Suggestion[],
+    onSuggestion: (item: Suggestion) => void
+}
+
+export interface WeatherCardProps {
+    description?: string,
+    unit?: "C" | "F",
+    extraDescription?: string | "",
+    weatherInfo: any,
+    icon: ImageSourcePropType
 }

@@ -1,8 +1,8 @@
-import { WeatherProps } from "@/interfaces/interfaces"
+import { WeatherCardProps, WeatherProps } from "@/interfaces/interfaces"
 import { styles } from "@/public/styles/style"
 import { assignTemperature } from "@/util/temp-converter"
 import { getIcon } from "@/util/weather-icons"
-import { Image, Platform, ScrollView, Switch, Text, View } from "react-native"
+import { FlatList, Image, ScrollView, Switch, Text, View } from "react-native"
 
 const data = [
   { id: "1", title: "Sunny" },
@@ -45,75 +45,56 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
         </View>
         <View className="currentWeather" style={styles.currentWeatherContainer}>
             <Text>Current Temperature</Text>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>{assignTemperature(weather.current.temperature, unit)}</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={getIcon(weather.current.weatherCode, weather.current.isDay)}
-                />
-            </View>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>Wind: {weather.current.windSpeed} km/h</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={require(`@/assets/icons/wind-speed.png`)}
-                />
-            </View>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>Apparent Temperature: {assignTemperature(weather.current.apparentTemp, unit)}</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={require(`@/assets/icons/apparent-temperature.png`)}
-                />
-            </View>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>Precipitation: {weather.current.precipitation}</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={require(`@/assets/icons/precipitation.png`)}
-                />
-            </View>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>Rain: {weather.current.rain}</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={require(`@/assets/icons/precipitation.png`)}
-                />
-            </View>
-            <View className="currentWeatherCard" style={styles.currentWeatherCard}>
-                <Text style={styles.resultText}>Shower: {weather.current.showers}</Text>
-                <Image
-                    style={styles.iconImg}
-                    source={require(`@/assets/icons/precipitation.png`)}
-                />
-            </View>
+            <WeatherCard
+                weatherInfo={weather.current.temperature}
+                unit={unit}
+                icon={getIcon(weather.current.weatherCode, weather.current.isDay)}
+            />
+            <WeatherCard
+                description="Wind: "
+                weatherInfo={weather.current.windSpeed}
+                extraDescription=" km/h"
+                icon={require(`@/assets/icons/wind-speed.png`)}
+            />
+            <WeatherCard
+                description="Apparent Temperature: "
+                weatherInfo={weather.current.apparentTemp}
+                unit={unit}
+                icon={require(`@/assets/icons/apparent-temperature.png`)}
+            />
+            <WeatherCard
+                description="Precipitation: "
+                weatherInfo={weather.current.precipitation}
+                icon={require(`@/assets/icons/precipitation.png`)}
+            />
+            <WeatherCard
+                description="Rain: "
+                weatherInfo={weather.current.rain}
+                icon={require(`@/assets/icons/precipitation.png`)}
+            />
+            <WeatherCard
+                description="Shower: "
+                weatherInfo={weather.current.rain}
+                icon={require(`@/assets/icons/precipitation.png`)}
+            />
         </View>
 
-        <View className="dayWeather">
-            <Text>Daily Weather</Text>
-            <ScrollView
+        <View style={{ height: 220, marginTop: 16 }}>
+            <Text style={{ fontSize: 18, marginBottom: 8 }}>Daily Weather</Text>
+            
+            <FlatList
                 horizontal
-                pagingEnabled
+                data={data}
+                style={{height: 300}}
+                keyExtractor={(item) => item.id.toString()}
                 showsHorizontalScrollIndicator={true}
-                scrollEnabled={true}
-                style={[
-                    Platform.OS === 'web' && {
-                        overflowX: 'auto',
-                        display: 'flex',
-                        flexDirection: 'row',
-                    },
-                ]}
-                contentContainerStyle={[
-                    styles.scrollContainer,
-                ]}
-                >
-                {data.map((item: any) => (
-                    <View key={item.id} style={styles.slide}>
-                        <Text style={styles.slideText}>{item.title}</Text>
-                    </View>
-                ))}
-            </ScrollView>
-
+                renderItem={({ item }) => (
+                <View style={styles.slide}>
+                    <Text style={styles.slideText}>{item.title}</Text>
+                </View>
+                )}
+                contentContainerStyle={styles.scrollContainer}
+            />
         </View>
 
         <View className="weekWeather">
@@ -123,3 +104,17 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
         
         <Text style={styles.attributeMsg}>All icons by iconixar from flaticon.com</Text>
     </View>
+
+export const WeatherCard: React.FC<WeatherCardProps> =({
+    description,
+    unit,
+    extraDescription,
+    weatherInfo,
+    icon
+}) =>   <View className="currentWeatherCard" style={styles.currentWeatherCard}>
+            <Text style={styles.resultText}>{description} {unit ? assignTemperature(weatherInfo, unit) : weatherInfo} {extraDescription}</Text>
+            <Image
+                style={styles.iconImg}
+                source={icon}
+            />
+        </View>

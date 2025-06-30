@@ -2,9 +2,9 @@ import { Coordinates, Suggestion, WeatherData } from "@/interfaces/interfaces";
 import axios from "axios";
 
 
-export const getSuggestions = async (query: string) => {
+export const getSuggestions = async (query: string) => { // function to fetch suggestions when users types location
     try {
-        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5`)
+        const response = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5`) // return up to 5 locations
 
         return response.data.results || [];
     } catch (error) {
@@ -13,12 +13,12 @@ export const getSuggestions = async (query: string) => {
     }
 }
 
-export const getCoordinates = async (locationName: string): Promise<Coordinates | null> => {
+export const getCoordinates = async (locationName: string): Promise<Coordinates | null> => { // function to get coordinates when user selects a locations
     try {
         const geoResult = await axios.get(
                 `https://geocoding-api.open-meteo.com/v1/search?name=${locationName}`)
 
-        const location = geoResult.data.results?.[0]
+        const location = geoResult.data.results?.[0] // only gets the first result
         if (!location) return null;
 
         return {
@@ -33,7 +33,7 @@ export const getCoordinates = async (locationName: string): Promise<Coordinates 
     }
 }
 
-export const getCurrWeather = async (latitude: number, longitude: number):Promise<WeatherData | null> => {
+export const getCurrWeather = async (latitude: number, longitude: number):Promise<WeatherData | null> => { //getting weather data from user input
     try {
         const weatherLocation = await axios.get("https://api.open-meteo.com/v1/forecast", {
                 params: {
@@ -48,7 +48,7 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
 
 
         const weatherData = weatherLocation.data;
-        return {
+        return { // gets all necessary data at once to avoid excessive requests
             current: {
                 temperature: weatherData.current.temperature_2m,
                 windSpeed: weatherData.current.wind_speed_10m,

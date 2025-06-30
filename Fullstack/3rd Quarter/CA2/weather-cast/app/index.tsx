@@ -1,8 +1,8 @@
 import React from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, Pressable, View } from "react-native";
 
 import { ErrorButton, SearchButton } from "@/components/buttons";
-import { DynamicSearch } from "@/components/dynamic-search";
+import { DynamicSearch, HistoryList } from "@/components/dynamic-search";
 import { SearchBar } from "@/components/search-bar";
 import { WeatherContainer } from "@/components/weather-container";
 import { useWeatherHandlers } from "@/hooks/handlers";
@@ -18,6 +18,11 @@ export default function App() {
     error,
     unit,
     currDate,
+    history,
+    inputFocused,
+    clearHistory,
+    saveHistory,
+    handleInputFocus,
     handleInputChange,
     handleSearch,
     handleSuggestionSelect,
@@ -31,49 +36,71 @@ export default function App() {
       style={{flex: 1}} 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <TouchableWithoutFeedback onPress={handleDismiss}>
-          <ScrollView 
+        <Pressable onPress={handleDismiss} style={{flex: 1}}>
+          
+          <View style={styles.container}>
+            <Text style={styles.title}>Weather Cast</Text>
+            <SearchBar
+              onFocus={() => handleInputFocus(true)}
+              location={location}
+              placeholder={placeholder}
+              onChangeText={handleInputChange}
+              onUseMyLocation={handleUserLocation}
+            />
+
+            {(history.length > 0 && inputFocused && !location) ? 
+              <>
+                <HistoryList
+                  history={history}
+                  onSuggestion={(item) => {
+                  handleInputChange(item.name);
+                  handleSearch();
+                }}
+              />
+              <Pressable
+                onPress={clearHistory}
+                style={{
+                  alignItems: "center",
+                  padding: 7,
+                  backgroundColor: "#eee",
+                  borderRadius: 6
+                }}
+              >
+                <Text style={{ color: "red" }}>Clear Search History</Text>
+              </Pressable>
+            </>
+            : suggestions.length > 0 && (
+              <DynamicSearch
+                suggestions={suggestions}
+                onSuggestion={handleSuggestionSelect}
+              />
+            )}
+
+            {error ? (
+              <ErrorButton
+                error={error}
+                onRetry={() => handleSearch()}
+                />
+            ) : 
+            <SearchButton
+              onSearch={() => handleSearch(undefined, undefined)}
+            />}     
+
+            {loading && <ActivityIndicator size="large" style={{ marginTop: 20 }} />}
+            <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             keyboardShouldPersistTaps="handled">
-            <View style={styles.container}>
-              <Text style={styles.title}>Weather Cast</Text>
-              <SearchBar
-                location={location}
-                placeholder={placeholder}
-                onChangeText={handleInputChange}
-                onUseMyLocation={handleUserLocation}
+            {weather && (
+              <WeatherContainer
+                date={currDate}
+                weather={weather}
+                unit={unit}
+                onTempChange={handleUnitChange}
               />
-
-              {suggestions.length > 0 && (
-                <DynamicSearch
-                  suggestions={suggestions}
-                  onSuggestion={handleSuggestionSelect}
-                />
-              )}
-
-              {error ? (
-                <ErrorButton
-                  error={error}
-                  onRetry={() => handleSearch()}
-                  />
-              ) : 
-              <SearchButton
-                onSearch={() => handleSearch(undefined, undefined)}
-              />}     
-
-              {loading && <ActivityIndicator size="large" style={{ marginTop: 20 }} />}
-
-              {weather && (
-                <WeatherContainer
-                  date={currDate}
-                  weather={weather}
-                  unit={unit}
-                  onTempChange={handleUnitChange}
-                />
-              )}
-            </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
+            )}
+            </ScrollView>
+          </View>
+        </Pressable>
       </KeyboardAvoidingView>
     )
 }

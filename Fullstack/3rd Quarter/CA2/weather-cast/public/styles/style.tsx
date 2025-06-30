@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   input: { height: 50, borderColor: '#333', borderWidth: 1, paddingHorizontal: 10, borderRadius: 6
   },
-  suggestionList: { backgroundColor: '#fff', borderRadius: 6, marginBottom: 8, maxHeight: 150,
+  suggestionList: { backgroundColor: '#fff', borderRadius: 6, marginBottom: 8, maxHeight: 300, minHeight:150,
   },
   suggestion: { padding: 10, borderBottomColor: '#ddd', borderBottomWidth: 1
   },
@@ -26,10 +26,10 @@ export const styles = StyleSheet.create({
   },
   currentWeatherCard: { flexDirection: 'row', alignItems: 'center'
   },
-  slide: { width: SCREEN_WIDTH, height: 200, justifyContent: 'center', alignItems: 'center',
+  slide: { width: 100, height: 200, justifyContent: 'center', alignItems: 'center',
   },
-  slideText: { fontSize: 24, fontWeight: 'bold', color: '#fff'
+  slideText: { fontSize: 24, fontWeight: 'bold', color: 'black'
   },
-  scrollContainer: { flexDirection: "row",
+  scrollContainer: { flexDirection: "row", width:500
   }
 });

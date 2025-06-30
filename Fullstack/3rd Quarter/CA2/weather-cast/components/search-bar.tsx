@@ -4,6 +4,7 @@ import {styles} from "@/public/styles/style"
 import { SearchProps } from "@/interfaces/interfaces";
 
 export const SearchBar: React.FC<SearchProps> = ({
+    onFocus,
     location,
     placeholder,
     onChangeText,
@@ -15,6 +16,7 @@ export const SearchBar: React.FC<SearchProps> = ({
             placeholder={placeholder} 
             value={location}
             onChangeText={onChangeText}
+            onFocus={onFocus}
         />
 
         <TouchableOpacity onPress={onUseMyLocation}>
