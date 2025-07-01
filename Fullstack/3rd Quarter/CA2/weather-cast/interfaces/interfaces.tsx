@@ -100,6 +100,14 @@ export interface CurrentWeatherCardProps {
     icon: ImageSourcePropType
 }
 
+export interface DayCardProps {
+    time: Date,
+    temperature: number,
+    weatherCode: number,
+    precProb: number,
+    unit: "C" | "F" 
+}
+
 export interface DailyCardProps {
     time: Date,
     weathercode: number,

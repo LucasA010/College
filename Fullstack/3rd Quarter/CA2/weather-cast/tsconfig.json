@@ -12,6 +12,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "public/api/weather-api.tsx"  ]
+    "expo-env.d.ts",
+    "public/api/weather-api.tsx",
+    "nativewind-env.d.ts"
+  ]
 }

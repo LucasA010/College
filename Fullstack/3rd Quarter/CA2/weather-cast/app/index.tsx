@@ -1,5 +1,7 @@
+import "@/public/styles/global.css";
+
 import React from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, Pressable, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 
 import { ErrorButton, SearchButton } from "@/components/buttons";
 import { DynamicSearch, HistoryList } from "@/components/dynamic-search";
@@ -7,6 +9,7 @@ import { SearchBar } from "@/components/search-bar";
 import { WeatherContainer } from "@/components/weather-container";
 import { useWeatherHandlers } from "@/hooks/handlers";
 import { styles } from "@/public/styles/style";
+
 
 export default function App() {
   const {
@@ -21,7 +24,6 @@ export default function App() {
     history,
     inputFocused,
     clearHistory,
-    saveHistory,
     handleInputFocus,
     handleInputChange,
     handleSearch,

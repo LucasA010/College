@@ -1,40 +1,37 @@
-import { CurrentWeatherCardProps, DailyCardProps, DateFormattingProps, WeatherProps } from "@/interfaces/interfaces"
+import "@/public/styles/global.css"
+
+import { CurrentWeatherCardProps, DailyCardProps, DateFormattingProps, DayCardProps, WeatherProps } from "@/interfaces/interfaces"
 import { styles } from "@/public/styles/style"
 import { assignTemperature } from "@/util/temp-converter"
 import { getIcon } from "@/util/weather-icons"
 import { format } from "date-fns"
 import { FlatList, Image, Switch, Text, View } from "react-native"
 
-const data = [
-  { id: "1", title: "Sunny" },
-  { id: "2", title: "Cloudy" },
-  { id: "3", title: "Rainy" },
-  { id: "4", title: "Rainy" },
-  { id: "5", title: "Rainy" },
-  { id: "6", title: "Rainy" },
-  { id: "7", title: "Rainy" },
-  { id: "8", title: "Rainy" },
-  { id: "9", title: "Rainy" },
-  { id: "10", title: "Rainy" },
-  { id: "11", title: "Rainy" },
-  { id: "12", title: "Rainy" },
-  { id: "13", title: "Rainy" },
-  { id: "14", title: "Rainy" },
-  { id: "15", title: "Rainy" },
-  { id: "16", title: "Rainy" },
-  { id: "17", title: "Rainy" },
-  { id: "18", title: "Rainy" },
-  { id: "19", title: "Rainy" },
-  { id: "20", title: "Rainy" }
-
-];
 
 export const WeatherContainer: React.FC<WeatherProps> = ({
     date,
     weather,
     unit,
     onTempChange
-}) => 
+}) => {
+    const hourlyIndexes: number[] = []
+
+    weather.hourly.time.forEach((time, index) => {
+        if (format(date, "P") === format(time, "P")) hourlyIndexes.push(index+1)
+    })
+    
+    const dayFilter = (arr?: any) => {
+        return hourlyIndexes.map(i => arr[i])
+    }
+
+    const hourlyFiltered = {
+        time: dayFilter(weather.hourly.time),
+        temperature: dayFilter(weather.hourly.temperature),
+        precipitationProb: dayFilter(weather.hourly.precipitationProb),
+        weatherCode: dayFilter(weather.hourly.weatherCode),
+    }
+
+    return(
     <View className="weatherContainer"  style={styles.mainWeatherContainer}>
         <View style={{flexDirection: "row", alignItems:"center", justifyContent:"space-evenly", width:800}}>
             <DateInfo date={date} formatType="MMMM do, h:mm a"/>
@@ -77,17 +74,26 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             <Text style={{ fontSize: 18, marginBottom: 8 }}>Daily Weather</Text>
             
             <FlatList
+                style={{width: 500}}
                 horizontal
-                data={data}
-                style={{height: 300}}
-                keyExtractor={(item) => item.id.toString()}
-                showsHorizontalScrollIndicator={true}
-                renderItem={({ item }) => (
-                <View style={styles.slide}>
-                    <Text style={styles.slideText}>{item.title}</Text>
-                </View>
+                scrollEnabled
+                data={hourlyFiltered.time.map((date, index) => ({
+                    date,
+                    temp: weather.hourly.temperature[index],
+                    weatherCode: weather.hourly.weatherCode[index],
+                    precProb: weather.hourly.precipitationProb[index]
+                }))}
+                keyExtractor={(_, index) => index.toString()}
+                contentContainerStyle={{paddingHorizontal: 10}}
+                renderItem={({item}) => (
+                    <DayCard
+                        time={item.date}
+                        temperature={item.temp}
+                        precProb={item.precProb}
+                        weatherCode={item.weatherCode}
+                        unit={unit}
+                    />
                 )}
-                contentContainerStyle={styles.scrollContainer}
             />
         </View>
 
@@ -124,6 +130,8 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
         
         <Text style={styles.attributeMsg}>All icons by iconixar from flaticon.com</Text>
     </View>
+)}
+    
 
 export const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> =({
     description,
@@ -138,6 +146,26 @@ export const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> =({
                 source={icon}
             />
         </View>
+
+export const DayCard: React.FC<DayCardProps> = ({
+    time,
+    unit,
+    temperature,
+    weatherCode,
+    precProb
+}) => {
+    return (
+        <View>
+            <DateInfo date={time} formatType="kk:mm"/>
+            <Text>{assignTemperature(temperature, unit)}</Text>
+            <Image 
+                style={styles.iconImg} 
+                source={getIcon(weatherCode, (7 < time.getHours() && time.getHours() < 19)? true : false)}
+            />
+            <Text>{precProb}</Text>
+            <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
+        </View>
+)}
 
 export const DailyWeatherCard: React.FC<DailyCardProps> = ({
     time,
