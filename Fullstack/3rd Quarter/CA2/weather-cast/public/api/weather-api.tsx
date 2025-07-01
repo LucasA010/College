@@ -1,4 +1,4 @@
-import { Coordinates, Suggestion, WeatherData } from "@/interfaces/interfaces";
+import { Coordinates, WeatherData } from "@/interfaces/interfaces";
 import axios from "axios";
 
 
@@ -79,8 +79,8 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
                 weatherCode: weatherData.daily.weather_code,
                 maxTemperature: weatherData.daily.temperature_2m_max,
                 minTemperature: weatherData.daily.temperature_2m_min,
-                sunrise: weatherData.daily.sunrise,
-                sunset: weatherData.daily.sunset,
+                sunrise: weatherData.daily.sunrise.map((t:string) => new Date(t)),
+                sunset: weatherData.daily.sunset.map((t:string) => new Date(t)),
                 windSpeed: weatherData.daily.wind_speed_10m_max,
                 rainSum: weatherData.daily.rain_sum,
                 showerSum: weatherData.daily.showers_sum,

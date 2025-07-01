@@ -92,10 +92,27 @@ export interface HistoryProps {
     onSuggestion: (item: Suggestion) => void
 }
 
-export interface WeatherCardProps {
+export interface CurrentWeatherCardProps {
     description?: string,
     unit?: "C" | "F",
     extraDescription?: string | "",
     weatherInfo: any,
     icon: ImageSourcePropType
+}
+
+export interface DailyCardProps {
+    time: Date,
+    weathercode: number,
+    minTemp: number,
+    maxTemp: number,
+    sunrise: Date,
+    sunset: Date,
+    unit: "C" | "F",
+    windSpeed: number,
+    precipitationProb: number
+}
+
+export interface DateFormattingProps {
+    date: Date,
+    formatType: string
 }
