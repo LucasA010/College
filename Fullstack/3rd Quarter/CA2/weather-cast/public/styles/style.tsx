@@ -1,3 +1,4 @@
+import "@/public/styles/global.css";
 import { Dimensions, StyleSheet } from "react-native";
 const SCREEN_WIDTH = Dimensions.get("window").width
 
@@ -33,3 +34,32 @@ export const styles = StyleSheet.create({
   scrollContainer: { flexDirection: "row", width:500
   }
 });
+
+export const strStyles = {
+  keyboardAvoidingStyle: "",
+  mainPressableContainer: "",
+  mainViewContainer: "",
+  textStyle: "",
+  searchBarStyle: "",
+  historyPressable: "",
+  textInputStyle: "",
+  iconStyle: "",
+  buttonStyle: "",
+  dynamicListStyle: "",
+  suggestionsStyle: "",
+  historyListStyle: "",
+  mainWeatherContainer: "",
+  weatherMetadataContainer: "",
+  temperatureSwitchContainer: "",
+  temperatureSwitch: "",
+  currentWeatherContainer: "",
+  dailyWeatherContainer: "",
+  dayList: "",
+  weekWeatherContainer: "",
+  weekList: "",
+  attributeMsg: "",
+  currentWeatherCard: "",
+  dayWeatherCard: "",
+  weekWeatherCard: "border-black",
+  weekCardSegment: "flex flex-row"
+}
