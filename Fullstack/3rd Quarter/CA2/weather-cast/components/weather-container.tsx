@@ -1,7 +1,7 @@
 import "@/public/styles/global.css"
 
 import { CurrentWeatherCardProps, DailyCardProps, DateFormattingProps, DayCardProps, WeatherProps } from "@/interfaces/interfaces"
-import { strStyles, styles } from "@/public/styles/style"
+import { styles } from "@/public/styles/style"
 import { assignTemperature } from "@/util/temp-converter"
 import { getIcon } from "@/util/weather-icons"
 import { format } from "date-fns"
@@ -32,21 +32,20 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
     }
 
     return(
-    <View className={strStyles.mainWeatherContainer}  style={styles.mainWeatherContainer}>
-        <View className={strStyles.weatherMetadataContainer} style={{flexDirection: "row", alignItems:"center", justifyContent:"space-evenly", width:800}}>
+    <View style={styles.mainWeatherContainer}>
+        <View style={{flexDirection: "row", alignItems:"center", justifyContent:"space-evenly", width:800}}>
             <DateInfo date={date} formatType="MMMM do, h:mm a"/>
-            <View className={strStyles.temperatureSwitchContainer} style={{flexDirection:"row"}}>
-                <Text className={strStyles.textStyle}> °C </Text>
+            <View style={{flexDirection:"row"}}>
+                <Text > °C </Text>
                 <Switch 
-                className={strStyles.temperatureSwitch}
                 value={unit === "F"}
                 onValueChange={onTempChange}
                 />
-                <Text className={strStyles.textStyle}> °F</Text>
+                <Text> °F</Text>
             </View>
         </View>
-        <View className={strStyles.currentWeatherContainer} style={styles.currentWeatherContainer}>
-            <Text className={strStyles.textStyle}>Current Temperature</Text>
+        <View style={styles.currentWeatherContainer}>
+            <Text>Current Temperature</Text>
             <CurrentWeatherCard
                 weatherInfo={weather.current.temperature}
                 unit={unit}
@@ -71,11 +70,10 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             />
         </View>
 
-        <View className={strStyles.dailyWeatherContainer} style={{ height: 220, marginTop: 16 }}>
-            <Text className={strStyles.textStyle} style={{ fontSize: 18, marginBottom: 8 }}>Daily Weather</Text>
+        <View style={{ height: 220, marginTop: 16 }}>
+            <Text style={{ fontSize: 18, marginBottom: 8 }}>Daily Weather</Text>
             
             <FlatList
-                className={strStyles.dayList}
                 style={{width: 500}}
                 horizontal
                 scrollEnabled
@@ -99,9 +97,9 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             />
         </View>
 
-        <View className={strStyles.weekWeatherContainer}>
+        <View>
             <FlatList
-                className={strStyles.weekList}
+                scrollEnabled={false}
                 data={weather.daily.time.map((date, index) => ({
                     date,
                     min: weather.daily.minTemperature[index],
@@ -131,7 +129,7 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
         </View>
         
         
-        <Text className={strStyles.attributeMsg} style={styles.attributeMsg}>All icons by iconixar from flaticon.com</Text>
+        <Text style={styles.attributeMsg}>All icons by iconixar from flaticon.com</Text>
     </View>
 )}
     
@@ -142,10 +140,9 @@ export const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> =({
     extraDescription,
     weatherInfo,
     icon
-}) =>   <View className={strStyles.currentWeatherCard} style={styles.currentWeatherCard}>
-            <Text className={strStyles.textStyle} style={styles.resultText}>{description} {unit ? assignTemperature(weatherInfo, unit) : weatherInfo} {extraDescription}</Text>
+}) =>   <View style={styles.currentWeatherCard}>
+            <Text style={styles.resultText}>{description} {unit ? assignTemperature(weatherInfo, unit) : weatherInfo} {extraDescription}</Text>
             <Image
-                className={strStyles.iconStyle}
                 style={styles.iconImg}
                 source={icon}
             />
@@ -159,16 +156,15 @@ export const DayCard: React.FC<DayCardProps> = ({
     precProb
 }) => {
     return (
-        <View className={strStyles.dayWeatherCard}>
+        <View >
             <DateInfo date={time} formatType="kk:mm"/>
-            <Text className={strStyles.textStyle}>{assignTemperature(temperature, unit)}</Text>
+            <Text>{assignTemperature(temperature, unit)}</Text>
             <Image 
-                className={strStyles.iconStyle}
                 style={styles.iconImg} 
                 source={getIcon(weatherCode, (7 < time.getHours() && time.getHours() < 19)? true : false)}
             />
-            <Text className={strStyles.textStyle}>{precProb}</Text>
-            <Image className={strStyles.iconStyle} style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
+            <Text>{precProb}</Text>
+            <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
         </View>
 )}
 
@@ -184,22 +180,22 @@ export const DailyWeatherCard: React.FC<DailyCardProps> = ({
     precipitationProb
 }) => <View className="flex-row m-3 hover:text-red-500">
         <DateInfo date={time} formatType="dd/MM"/>
-        <Image className={strStyles.iconStyle} style={styles.iconImg} source={getIcon(weathercode, true)}/>
-        <Text className={strStyles.textStyle}>{assignTemperature(minTemp, unit)}</Text>
-        <Text className={strStyles.textStyle}>{assignTemperature(maxTemp, unit)}</Text>
-        <View className={strStyles.weekCardSegment}>
-            <Text className={strStyles.textStyle}>WindSpeed: {windSpeed} km/h</Text>
+        <Image style={styles.iconImg} source={getIcon(weathercode, true)}/>
+        <Text>{assignTemperature(minTemp, unit)}</Text>
+        <Text>{assignTemperature(maxTemp, unit)}</Text>
+        <View>
+            <Text>WindSpeed: {windSpeed} km/h</Text>
             <Image style={styles.iconImg} source={require("@/assets/icons/wind-speed.png")}/>
         </View>
-        <View className={strStyles.weekCardSegment}>
-            <Text className={strStyles.textStyle}>Precipitation Probability: {precipitationProb}</Text>
+        <View>
+            <Text>Precipitation Probability: {precipitationProb}</Text>
             <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
         </View>
-        <View className={strStyles.weekCardSegment}>
+        <View>
             <Image style={styles.iconImg} source={require("@/assets/icons/sunrise.png")}/>
             <DateInfo date={sunrise} formatType="kk:mm"/>
         </View>
-        <View className={strStyles.weekCardSegment}>
+        <View>
             <Image style={styles.iconImg} source={require("@/assets/icons/sunset.png")}/>
             <DateInfo date={sunset} formatType="kk:mm"/>
         </View>
@@ -211,5 +207,5 @@ export const DateInfo: React.FC<DateFormattingProps> = ({
 }) => {
     const formattedDate = format(date, formatType)
     return (
-        <Text className={strStyles.textStyle}>{formattedDate}</Text>
+        <Text>{formattedDate}</Text>
     )}

@@ -1,5 +1,5 @@
 import { SearchProps } from "@/interfaces/interfaces";
-import { strStyles, styles } from "@/public/styles/style";
+import { styles } from "@/public/styles/style";
 import React from "react";
 import { Image, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -12,7 +12,6 @@ export const SearchBar: React.FC<SearchProps> = ({
 }) => 
     <View style={{flexDirection: "row", alignItems:"center", marginBottom: 10}}>          
         <TextInput
-            className={strStyles.textInputStyle}
             style={[styles.input, {flex:1, marginRight: 8}]}
             placeholder={placeholder} 
             value={location}
@@ -22,7 +21,6 @@ export const SearchBar: React.FC<SearchProps> = ({
 
         <TouchableOpacity onPress={onUseMyLocation}>
             <Image 
-            className={strStyles.iconStyle}
             source={require("@/assets/icons/location.png")}
             style={{width: 24, height: 24}}/>
         </TouchableOpacity>

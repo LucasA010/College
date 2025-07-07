@@ -8,7 +8,7 @@ import { DynamicSearch, HistoryList } from "@/components/dynamic-search";
 import { SearchBar } from "@/components/search-bar";
 import { WeatherContainer } from "@/components/weather-container";
 import { useWeatherHandlers } from "@/hooks/handlers";
-import { strStyles, styles } from "@/public/styles/style";
+import { styles } from "@/public/styles/style";
 
 
 export default function App() {
@@ -38,9 +38,9 @@ export default function App() {
       className='flex-1' 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Pressable className={strStyles.mainPressableContainer} onPress={handleDismiss} style={{flex: 1}}>
+        <Pressable  onPress={handleDismiss} style={{flex: 1}}>
           
-          <View className={strStyles.mainViewContainer} style={styles.container}>
+          <View  style={styles.container}>
             <Text className='text-4xl text-center mb-10' >Weather Cast</Text>
             <SearchBar
               onFocus={() => handleInputFocus(true)}
@@ -60,7 +60,7 @@ export default function App() {
                 }}
               />
               <Pressable
-                className={strStyles.historyPressable}
+                
                 onPress={clearHistory}
                 style={{
                   alignItems: "center",
@@ -69,7 +69,7 @@ export default function App() {
                   borderRadius: 6
                 }}
               >
-                <Text className={strStyles.textStyle} style={{ color: "red" }}>Clear Search History</Text>
+                <Text  style={{ color: "red" }}>Clear Search History</Text>
               </Pressable>
             </>
             : suggestions.length > 0 && (
