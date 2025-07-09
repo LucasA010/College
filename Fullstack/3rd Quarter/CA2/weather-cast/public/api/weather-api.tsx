@@ -39,9 +39,9 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
                 params: {
                     latitude,
                     longitude,
-                    current: "temperature_2m,precipitation,rain,showers,is_day,apparent_temperature,wind_speed_10m,weather_code",
-                    hourly: "temperature_2m,weather_code,precipitation_probability,apparent_temperature,rain,showers,precipitation,wind_speed_10m,soil_temperature_0cm,visibility",
-                    daily: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,rain_sum,showers_sum,precipitation_probability_max,precipitation_sum",
+                    current: "temperature_2m,precipitation,is_day,apparent_temperature,wind_speed_10m,weather_code",
+                    hourly: "temperature_2m,weather_code,precipitation_probability",
+                    daily: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,precipitation_probability_max",
                     timezone: "auto"
                 }
                 });
@@ -55,8 +55,6 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
                 weatherCode:weatherData.current.weather_code,
                 apparentTemp:weatherData.current.apparent_temperature,
                 precipitation: weatherData.current.precipitation,
-                rain: weatherData.current.rain,
-                showers: weatherData.current.showers,
                 isDay: weatherData.current.is_day
             },
 
@@ -65,13 +63,6 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
                 temperature: weatherData.hourly.temperature_2m,
                 weatherCode: weatherData.hourly.weather_code,
                 precipitationProb: weatherData.hourly.precipitation_probability,
-                apparentTemp: weatherData.hourly.apparent_temperature,
-                rain: weatherData.hourly.rain,
-                showers: weatherData.hourly.showers,
-                precipitation: weatherData.hourly.precipitation,
-                windSpeed: weatherData.hourly.wind_speed_10m,
-                soilTemp: weatherData.hourly.soil_temperature_0cm,
-                visibility: weatherData.hourly.visibility
             },
             
             daily: {
@@ -82,10 +73,7 @@ export const getCurrWeather = async (latitude: number, longitude: number):Promis
                 sunrise: weatherData.daily.sunrise.map((t:string) => new Date(t)),
                 sunset: weatherData.daily.sunset.map((t:string) => new Date(t)),
                 windSpeed: weatherData.daily.wind_speed_10m_max,
-                rainSum: weatherData.daily.rain_sum,
-                showerSum: weatherData.daily.showers_sum,
                 precipitationProb: weatherData.daily.precipitation_probability_max,
-                precipitationSum: weatherData.daily.precipitation_sum
             }
         }
     } catch (error) {

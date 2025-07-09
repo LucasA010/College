@@ -23,8 +23,6 @@ export interface WeatherData {
         weatherCode:number,
         apparentTemp:number,
         precipitation?: number,
-        rain?: number,
-        showers?: number,
         isDay: boolean
     }
 
@@ -33,13 +31,7 @@ export interface WeatherData {
         temperature: number[],
         weatherCode: number[],
         precipitationProb: number[],
-        apparentTemp: number[],
-        rain?: number[],
-        showers?: number[],
-        precipitation?: number[],
-        windSpeed: number[],
-        soilTemp?: number[],
-        visibility?: number[]
+        
     }
     
     daily: {
@@ -50,10 +42,7 @@ export interface WeatherData {
         sunrise: Date[],
         sunset: Date[],
         windSpeed: number[],
-        rainSum?: number[],
-        showerSum?: number[],
         precipitationProb: number[],
-        precipitationSum?: number[]
     }
     
 }

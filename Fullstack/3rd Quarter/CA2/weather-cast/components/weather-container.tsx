@@ -33,7 +33,7 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
 
     return(
     <View style={styles.mainWeatherContainer}>
-        <View style={{flexDirection: "row", alignItems:"center", justifyContent:"space-evenly", width:800}}>
+        <View style={styles.tempControlContainer}>
             <DateInfo date={date} formatType="MMMM do, h:mm a"/>
             <View style={{flexDirection:"row"}}>
                 <Text > °C </Text>
@@ -45,7 +45,7 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             </View>
         </View>
         <View style={styles.currentWeatherContainer}>
-            <Text>Current Temperature</Text>
+            <Text style={styles.subTitle}>Current Temperature</Text>
             <CurrentWeatherCard
                 weatherInfo={weather.current.temperature}
                 unit={unit}
@@ -58,7 +58,7 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
                 icon={require(`@/assets/icons/wind-speed.png`)}
             />
             <CurrentWeatherCard
-                description="Apparent Temperature: "
+                description="Feels like: "
                 weatherInfo={weather.current.apparentTemp}
                 unit={unit}
                 icon={require(`@/assets/icons/apparent-temperature.png`)}
@@ -70,11 +70,11 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             />
         </View>
 
-        <View style={{ height: 220, marginTop: 16 }}>
-            <Text style={{ fontSize: 18, marginBottom: 8 }}>Daily Weather</Text>
+        <View style={styles.hourlyContainer}>
+            <Text style={styles.subTitle}>Daily Weather</Text>
             
             <FlatList
-                style={{width: 500}}
+                style={styles.dailyList}
                 horizontal
                 scrollEnabled
                 data={hourlyFiltered.time.map((date, index) => ({
@@ -97,7 +97,8 @@ export const WeatherContainer: React.FC<WeatherProps> = ({
             />
         </View>
 
-        <View>
+        <View style={styles.dailyContainer}>
+            <Text style={styles.subTitle}>Week Weather</Text>
             <FlatList
                 scrollEnabled={false}
                 data={weather.daily.time.map((date, index) => ({
@@ -156,15 +157,17 @@ export const DayCard: React.FC<DayCardProps> = ({
     precProb
 }) => {
     return (
-        <View >
+        <View style={styles.dayCardContainer} >
             <DateInfo date={time} formatType="kk:mm"/>
-            <Text>{assignTemperature(temperature, unit)}</Text>
+            <Text style={{textAlign:'center'}}>{assignTemperature(temperature, unit)}</Text>
             <Image 
                 style={styles.iconImg} 
                 source={getIcon(weatherCode, (7 < time.getHours() && time.getHours() < 19)? true : false)}
             />
-            <Text>{precProb}</Text>
-            <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
+            <View style={styles.innerDayCard}>
+                <Text style={{textAlign:'center'}}>{precProb}</Text>
+                <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
+            </View>
         </View>
 )}
 
@@ -178,26 +181,34 @@ export const DailyWeatherCard: React.FC<DailyCardProps> = ({
     unit,
     windSpeed,
     precipitationProb
-}) => <View className="flex-row m-3 hover:text-red-500">
-        <DateInfo date={time} formatType="dd/MM"/>
-        <Image style={styles.iconImg} source={getIcon(weathercode, true)}/>
-        <Text>{assignTemperature(minTemp, unit)}</Text>
-        <Text>{assignTemperature(maxTemp, unit)}</Text>
-        <View>
-            <Text>WindSpeed: {windSpeed} km/h</Text>
-            <Image style={styles.iconImg} source={require("@/assets/icons/wind-speed.png")}/>
+}) => <View style={styles.dailyCards}>
+        <View style={styles.dailySecCard}>
+            <DateInfo date={time} formatType="dd/MM"/>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={getIcon(weathercode, true)}/>
         </View>
-        <View>
-            <Text>Precipitation Probability: {precipitationProb}</Text>
-            <Image style={styles.iconImg} source={require("@/assets/icons/humidity.png")}/>
+        <View style={styles.dailySecCard}>
+            <Text style={styles.text}>{assignTemperature(maxTemp, unit)}</Text>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/max-temperature.png")}/>
         </View>
-        <View>
-            <Image style={styles.iconImg} source={require("@/assets/icons/sunrise.png")}/>
+        <View style={styles.dailySecCard}>
+            <Text style={styles.text}>{assignTemperature(minTemp, unit)}</Text>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/max-temperature.png")}/>
+        </View>
+        <View style={styles.dailySecCard}>
+            <Text style={styles.text}>{windSpeed} km/h</Text>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/wind-speed.png")}/>
+        </View>
+        <View style={styles.dailySecCard}>
+            <Text style={styles.text}>{precipitationProb}%</Text>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/humidity.png")}/>
+        </View>
+        <View style={styles.dailySecCard}>
             <DateInfo date={sunrise} formatType="kk:mm"/>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/sunrise.png")}/>
         </View>
-        <View>
-            <Image style={styles.iconImg} source={require("@/assets/icons/sunset.png")}/>
+        <View style={styles.dailySecCard}>
             <DateInfo date={sunset} formatType="kk:mm"/>
+            <Image style={[styles.iconImg, {marginLeft: 3}]} source={require("@/assets/icons/sunset.png")}/>
         </View>
       </View>
 
@@ -207,5 +218,5 @@ export const DateInfo: React.FC<DateFormattingProps> = ({
 }) => {
     const formattedDate = format(date, formatType)
     return (
-        <Text>{formattedDate}</Text>
+        <Text style={styles.text}>{formattedDate}</Text>
     )}

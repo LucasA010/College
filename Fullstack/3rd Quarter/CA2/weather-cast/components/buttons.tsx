@@ -9,7 +9,7 @@ export const ErrorButton: React.FC<ErrorProps> = ({
 }) => 
 <>
     <Button title="Retry" onPress={onRetry} />
-    <Text style={styles.error}>{error}</Text>
+    <Text style={styles.errorText}>{error}</Text>
 </>
 
 export const SearchButton: React.FC<SearchButtonProps> = ({

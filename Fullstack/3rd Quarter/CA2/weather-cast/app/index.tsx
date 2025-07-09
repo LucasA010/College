@@ -34,14 +34,14 @@ export default function App() {
   } = useWeatherHandlers();
 
     return(
-      <KeyboardAvoidingView 
-      className='flex-1' 
+      <KeyboardAvoidingView
+      style={styles.keyboardOuterContainer}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Pressable  onPress={handleDismiss} style={{flex: 1}}>
+        <Pressable  onPress={handleDismiss} style={styles.pressableContainer}>
           
-          <View  style={styles.container}>
-            <Text className='text-4xl text-center mb-10' >Weather Cast</Text>
+          <View  style={styles.outerViewContainer}>
+            <Text style={styles.titleText}>Weather Cast</Text>
             <SearchBar
               onFocus={() => handleInputFocus(true)}
               location={location}
@@ -62,12 +62,7 @@ export default function App() {
               <Pressable
                 
                 onPress={clearHistory}
-                style={{
-                  alignItems: "center",
-                  padding: 7,
-                  backgroundColor: "#eee",
-                  borderRadius: 6
-                }}
+                style={styles.pressableHistory}
               >
                 <Text  style={{ color: "red" }}>Clear Search History</Text>
               </Pressable>
@@ -91,6 +86,7 @@ export default function App() {
 
             {loading && <ActivityIndicator size="large" style={{ marginTop: 20 }} />}
             <ScrollView
+            style={styles.weatherMainScrollView}
             contentContainerStyle={{flexGrow: 1}}
             keyboardShouldPersistTaps="handled">
             {weather && (

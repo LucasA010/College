@@ -10,9 +10,9 @@ export const SearchBar: React.FC<SearchProps> = ({
     onChangeText,
     onUseMyLocation
 }) => 
-    <View style={{flexDirection: "row", alignItems:"center", marginBottom: 10}}>          
+    <View style={styles.searchView}>          
         <TextInput
-            style={[styles.input, {flex:1, marginRight: 8}]}
+            style={styles.inputText}
             placeholder={placeholder} 
             value={location}
             onChangeText={onChangeText}
@@ -22,7 +22,7 @@ export const SearchBar: React.FC<SearchProps> = ({
         <TouchableOpacity onPress={onUseMyLocation}>
             <Image 
             source={require("@/assets/icons/location.png")}
-            style={{width: 24, height: 24}}/>
+            style={styles.locationIcon}/>
         </TouchableOpacity>
     </View>
 
